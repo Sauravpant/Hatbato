@@ -14,14 +14,17 @@ enum Role {
 }
 
 model User {
-  id              Int       @id @default(autoincrement())
+  id              String    @id @default(uuid())
   name            String
   email           String    @unique
   password        String
   role            Role      @default(user)
   imageUrl        String? // Display URL of user's profile image
   imagePublicId   String? // Cloudinary public ID for image deletion/updating
-  address         String? // User's address/profile location
+  address         String // User's address/profile location
+  contactNumber   String    @unique
+  refreshToken    String? // For JWT refresh token
+  isVerified      Boolean   @default(false) // Email verification status
   products        Product[]
   reviewsGiven    Review[]  @relation("Reviewer")
   reviewsReceived Review[]  @relation("Seller")
@@ -41,7 +44,7 @@ model Product {
   imagePublicId String // Cloudinary public ID for image management
   postedAt      DateTime  @default(now())
   user          User      @relation(fields: [userId], references: [id])
-  userId        Int
+  userId        String
   category      Category? @relation(fields: [categoryId], references: [id])
   categoryId    Int?
 }
@@ -60,8 +63,8 @@ model Review {
   rating     Int // e.g. 1 to 5
   comment    String?
   reviewer   User     @relation("Reviewer", fields: [reviewerId], references: [id])
-  reviewerId Int
+  reviewerId String
   seller     User     @relation("Seller", fields: [sellerId], references: [id])
-  sellerId   Int
+  sellerId   String
   createdAt  DateTime @default(now())
 }
