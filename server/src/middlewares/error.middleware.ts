@@ -1,7 +1,17 @@
 import { Request, Response, NextFunction } from "express";
 import { AppError } from "../utils/app-error.ts";
+import { ZodError } from "zod";
 
-const errorMiddleware = (err: AppError, req: Request, res: Response, next: NextFunction) => {
+const errorMiddleware = (err: any, req: Request, res: Response, next: NextFunction) => {
+  // Handle Zod validation errors
+  if (err instanceof ZodError) {
+    return res.status(400).json({
+      success: false,
+      message: "Validation failed",
+      errors: err.issues,
+    });
+  }
+  // Handle custom AppError
   const statusCode = err.statusCode || 500;
   res.status(statusCode).json({
     success: false,

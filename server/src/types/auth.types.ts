@@ -1,0 +1,26 @@
+import type { User } from "../../generated/prisma/index.js";
+//Type Defination for Registration data
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  address: string;
+  contactNumber: string;
+}
+
+//Type Defination for Login data
+export interface LoginData {
+  email: string;
+  password: string;
+}
+//Type Defination for Registration  Response
+export interface RegistrationResponse  {
+  userData: Omit<User, "password">;
+}
+
+//Type Defination for Login Response
+export interface LoginResponse {
+  accessToken: string;
+  refreshToken: string;
+  userData: Omit<User, "password">;
+}
