@@ -17,6 +17,8 @@ app.use(cookieParser());
 app.use(limiter);
 
 import authRoutes from "./routes/auth.routes.ts";
+import userRoutes from "./routes/user.routes.ts"
 app.use("/api/v1/auth", authRoutes);
+app.use("/api/v1/user", userRoutes);
 app.use(errorMiddleware);
 export default app;
