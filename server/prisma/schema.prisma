@@ -68,3 +68,9 @@ model Review {
   sellerId   String
   createdAt  DateTime @default(now())
 }
+
+model Otp {
+  email     String   @id // Email to which OTP was sent
+  otp       String // OTP code
+  createdAt DateTime @default(now())
+}
