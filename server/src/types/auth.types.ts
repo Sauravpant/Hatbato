@@ -14,7 +14,7 @@ export interface LoginData {
   password: string;
 }
 //Type Defination for Registration  Response
-export interface RegistrationResponse  {
+export interface RegistrationResponse {
   userData: Omit<User, "password">;
 }
 
@@ -23,4 +23,10 @@ export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
   userData: Omit<User, "password">;
+}
+
+export interface ResetPasswordData {
+  email: string;
+  oldPassword: string;
+  newPassword: string;
 }

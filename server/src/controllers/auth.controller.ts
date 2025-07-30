@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 import { asyncHandler } from "../utils/async-handler.ts";
-import { registerSchema, loginSchema } from "../validators/auth.validator.ts";
-import { register, login, logOut } from "../services/auth.services.ts";
+import { registerSchema, loginSchema, resetPasswordSchema } from "../validators/auth.validator.ts";
+import { register, login, logOut, resetPassword, sendOTP, verifyEmail } from "../services/auth.services.ts";
 import { ApiResponse } from "../utils/api-response.ts";
 import { AppError } from "../utils/app-error.ts";
 import { prisma } from "../db/config.ts";
@@ -43,7 +43,7 @@ export const loginUser = asyncHandler(async (req: Request, res: Response): Promi
 
 //Controller to handle the logout
 export const logOutUser = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
-  logOut(req.user.id);
+  await logOut(req.user.id);
   const options = {
     httpOnly: true,
     secure: true,
@@ -56,11 +56,36 @@ export const logOutUser = asyncHandler(async (req: AuthenticatedRequest, res: Re
     .json(new ApiResponse(200, null, "User logged out"));
 });
 
+//Controller to change the password
+export const changePassword = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+  const { oldPassword, newPassword } = req.body;
+  const validatedData = await resetPasswordSchema.parseAsync({ oldPassword, newPassword });
+  const user = await resetPassword({ ...validatedData, email: req.user.email });
+  return res.status(200).json(new ApiResponse(200, user, "Password changed Successfully"));
+});
+
+//Controller to send the otp to user's email
+export const sendOtp = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+  await sendOTP(req.user.email);
+  return res.status(200).json(new ApiResponse(200, {}, "A 6 digit otp has been sent to your email"));
+});
+
+//Controller to verify the user's account
+export const verifyAccount = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+  const { otp } = req.body;
+  if (!otp || typeof otp !== "string" || otp.length !== 6) {
+    throw new AppError(422, "OTP must be exactly 6 digits as a string");
+  }
+  const email = req.user.email;
+  await verifyEmail(email, otp);
+  return res.status(200).json(new ApiResponse(200, {}, "Account verified uccessfully"));
+});
+
 //Controller to issue the new access token to the user after old one  expires
 export const refreshAccessToken = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
   const refreshToken = req.cookies?.refreshToken;
   if (!refreshToken) {
-    throw new AppError(401, "Refresh token not found");
+    throw new AppError(401, "Refresh token is missing. Please log in again.");
   }
   //Check if the token exists
   const storedUser = await prisma.user.findFirst({
@@ -69,7 +94,7 @@ export const refreshAccessToken = asyncHandler(async (req: Request, res: Respons
     },
   });
   if (!storedUser) {
-    throw new AppError(401, "Token is invalid");
+    throw new AppError(401, "Refresh token is invalid or does not match any user");
   }
   let decodedToken;
   //Verify the existing token
@@ -87,7 +112,7 @@ export const refreshAccessToken = asyncHandler(async (req: Request, res: Respons
     });
     res.clearCookie("accessToken");
     res.clearCookie("refreshToken");
-    throw new AppError(401, "Session expired. Please log in again.");
+    throw new AppError(401, "Session expired or refresh token invalid. Please log in again.");
   }
   const user = await prisma.user.findUnique({
     where: {
@@ -95,7 +120,7 @@ export const refreshAccessToken = asyncHandler(async (req: Request, res: Respons
     },
   });
   if (!user) {
-    throw new AppError(401, "User not found");
+    throw new AppError(404, "User not found");
   }
   const newAccessToken = generateAccessToken(user.id);
   const { password, ...data } = user;

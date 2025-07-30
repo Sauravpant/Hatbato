@@ -26,3 +26,22 @@ export const loginSchema = z.object({
       "Password must include uppercase, lowercase, number, and special character"
     ),
 });
+
+export const resetPasswordSchema = z.object({
+  oldPassword: z
+    .string()
+    .min(8, "Password must be of 8 digits")
+    .max(15, "Password can be at most 15 characters long")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      "Password must include uppercase, lowercase, number, and special character"
+    ),
+  newPassword: z
+    .string()
+    .min(8, "Password must be of 8 digits")
+    .max(15, "Password can be at most 15 characters long")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+      "Password must include uppercase, lowercase, number, and special character"
+    ),
+});
