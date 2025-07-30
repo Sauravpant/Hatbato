@@ -6,7 +6,7 @@ import { rateLimit } from "express-rate-limit";
 const app = express();
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000,
-  limit: 20, //
+  limit: 50, //
   standardHeaders: "draft-8",
   ipv6Subnet: 56,
 });
