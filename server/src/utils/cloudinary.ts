@@ -25,7 +25,7 @@ export const uploadToCloudinary = async (filePath: string): Promise<any> => {
 export const deleteFromCloudinary = async (publicId: string): Promise<void> => {
   try {
     await cloudinary.uploader.destroy(publicId, {
-      resource_type: "auto",
+      resource_type: "image",
     });
   } catch (err) {
     throw err;
