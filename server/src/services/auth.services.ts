@@ -23,6 +23,14 @@ export const register = async (data: RegisterData): Promise<RegistrationResponse
       password: hashedPassword,
     },
   });
+  //Create the notification for user
+  await prisma.notification.create({
+    data: {
+      userId: user.id,
+      type: "account_created",
+      message: "Your account has been successfully created.",
+    },
+  });
   const { password, ...userData } = user;
   return { userData };
 };
@@ -89,6 +97,13 @@ export const resetPassword = async (data: ResetPasswordData): Promise<Omit<User,
       password: hashedPassword,
     },
   });
+  await prisma.notification.create({
+    data: {
+      userId: user.id,
+      type: "password_changed",
+      message: "Your password has been changed successfully.",
+    },
+  });
   const { password, ...userData } = user;
   return userData;
 };
@@ -142,6 +157,7 @@ export const verifyEmail = async (email: string, submittedOtp: string) => {
   if (!isOtpMatches) {
     throw new AppError(400, "Invalid OTP.Try again");
   }
+  const user = await prisma.user.findUnique({ where: { email } });
   //If the submitted otp matches mark the user as verified
   await prisma.$transaction([
     prisma.user.update({
@@ -152,7 +168,13 @@ export const verifyEmail = async (email: string, submittedOtp: string) => {
         isVerified: true,
       },
     }),
-
+    prisma.notification.create({
+      data: {
+        userId: user.id,
+        type: "account_verified",
+        message: "Your account has been verified successfully.",
+      },
+    }),
     //Delete the entry in the otp table after successful verification
     prisma.otp.delete({ where: { email } }),
   ]);
