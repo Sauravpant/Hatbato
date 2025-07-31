@@ -17,8 +17,10 @@ app.use(cookieParser());
 app.use(limiter);
 
 import authRoutes from "./routes/auth.routes.ts";
-import userRoutes from "./routes/user.routes.ts"
+import userRoutes from "./routes/user.routes.ts";
+import notificationRoute from "./routes/notification.routes.ts";
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);
+app.use("/api/v1/user/notification", notificationRoute);
 app.use(errorMiddleware);
 export default app;
