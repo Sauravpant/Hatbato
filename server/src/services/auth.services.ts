@@ -106,10 +106,13 @@ export const sendOTP = async (email: string): Promise<void> => {
     throw new AppError(401, "Account is already verified");
   }
   const userOtp = Math.floor(100000 + Math.random() * 900000).toString();
+  //Hash the otp -> Save the hashed otp in the database and send the unhashed otp to user's email
+  const salt = await bcrypt.genSalt(10);
+  const hashedOtp = await bcrypt.hash(userOtp, salt);
   await prisma.otp.create({
     data: {
       email,
-      otp: userOtp,
+      otp: hashedOtp,
     },
   });
   await sendMail(email, userOtp);
@@ -127,27 +130,30 @@ export const verifyEmail = async (email: string, submittedOtp: string) => {
   const expiryTime = 5 * 60 * 1000; //5 minutes timestamp for otp
   if (Date.now() - otpEntry.createdAt.getTime() > expiryTime) {
     //Delete the OTP entry if the otp is expired
-    await prisma.otp.delete({
+    await prisma.otp.deleteMany({
       where: {
         email: email,
       },
     });
     throw new AppError(400, "OTP expired");
   }
-
+  const isOtpMatches = await bcrypt.compare(submittedOtp, otpEntry.otp);
   //Check if the OTP matches with the submitted OTP
-  if (otpEntry.otp !== submittedOtp) {
+  if (!isOtpMatches) {
     throw new AppError(400, "Invalid OTP.Try again");
   }
   //If the submitted otp matches mark the user as verified
-  await prisma.user.update({
-    where: {
-      email,
-    },
-    data: {
-      isVerified: true,
-    },
-  });
-  //Delete the entry in the otp table after successful verification
-  await prisma.otp.delete({ where: { email } });
+  await prisma.$transaction([
+    prisma.user.update({
+      where: {
+        email,
+      },
+      data: {
+        isVerified: true,
+      },
+    }),
+
+    //Delete the entry in the otp table after successful verification
+    prisma.otp.delete({ where: { email } }),
+  ]);
 };
