@@ -1,16 +1,16 @@
-import { Request, response, Response } from "express";
+import { Request, Response } from "express";
 import { asyncHandler } from "../utils/async-handler.ts";
 import { AppError } from "../utils/app-error.ts";
 import { ApiResponse } from "../utils/api-response.ts";
-import { deleteAccount, deletePicture, getMe, updateUser, uploadPicture } from "../services/user.services.ts";
+import { deleteAccount, deletePicture, getMe, updateUser, uploadPicture, sendOTP, reset } from "../services/user.services.ts";
 import { User } from "../../generated/prisma/index.js";
-import { updateUserSchema } from "../validators/user.validator.ts";
+import { emailSchema, resetPasswordSchema, updateUserSchema } from "../validators/user.validator.ts";
 
 interface AuthenticatedRequest extends Request {
   user: User;
 }
 
-//Controller to handle the profile update
+// Controller to update the user's profile details
 export const updateProfileDetails = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
   if (!req.body) {
     throw new AppError(400, "All fields are empty");
@@ -19,20 +19,20 @@ export const updateProfileDetails = asyncHandler(async (req: AuthenticatedReques
   const result = await updateUser({ ...validatedData, id: req.user.id });
   return res.status(200).json(new ApiResponse(200, result, "Profile Updated successfully"));
 });
-//Controller to upload the profile picture of user
+// Controller to upload the user's profile picture
 export const uploadProfilePicture = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
   const imagePath = req.file.path;
   const result = await uploadPicture({ imagePath, id: req.user.id });
   return res.status(200).json(new ApiResponse(200, result, "Image uploaded successfully"));
 });
 
-//Controller to delete the profile picture of user
+// Controller to delete the user's profile picture
 export const deleteProfilePicture = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
   await deletePicture(req.user.id);
   return res.status(200).json(new ApiResponse(200, {}, "Image deleted successfully"));
 });
 
-//Controller to handle the account deletion of user
+// Controller to handle user account deletion
 export const deleteUser = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
   await deleteAccount(req.user.id);
   const options = {
@@ -46,8 +46,22 @@ export const deleteUser = asyncHandler(async (req: AuthenticatedRequest, res: Re
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "User deleted successfully"));
 });
-
+// Controller to fetch the current user's details
 export const getUser = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
   const user = await getMe(req.user.id);
   return res.status(200).json(new ApiResponse(200, user, "User fetched successfully"));
+});
+//Controlle to send the otp to user's email for password reset
+export const sendOtp = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
+  const data = await emailSchema.parseAsync(req.body);
+  await sendOTP(data.email);
+  return res.status(200).json(new ApiResponse(200, {}, "A 6 digit OTP has been sent to your email"));
+});
+
+// Controller to handle password reset
+export const resetPassword = asyncHandler(async (req: Request, res: Response) => {
+  const { email, newPassword, confirmNewPassword, otp } = req.body;
+  const validatedData = await resetPasswordSchema.parseAsync({ email, newPassword, confirmNewPassword, otp });
+  await reset(validatedData);
+  return res.status(200).json(new ApiResponse(200, {}, "Password reset successfully. Please log in again."));
 });

@@ -5,3 +5,28 @@ export const updateUserSchema = z.object({
   contact: z.string().min(10, "Phone number must be exactly 10 digits").max(10, "Phone number must be exactly 10 digits").optional(),
   address: z.string().max(30, "Address is too long").optional(),
 });
+
+export const emailSchema = z.object({
+  email: z.email({ pattern: z.regexes.email }),
+});
+
+export const resetPasswordSchema = z.object({
+  email: z.email({ pattern: z.regexes.email }),
+  newPassword: z
+    .string()
+    .min(8, "Password must be 8 digits")
+    .max(15, "Paassword can be at most 15 characters long")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/,
+      "Password must include uppercase, lowercase, number, and special character"
+    ),
+  confirmNewPassword: z
+    .string()
+    .min(8, "Password must be 8 digits")
+    .max(15, "Paassword can be at most 15 characters long")
+    .regex(
+      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?#&])[A-Za-z\d@$!%*?#&]{8,}$/,
+      "Password must include uppercase, lowercase, number, and special character"
+    ),
+  otp: z.string().max(6, "OTP must be of 6 digits").min(6, "OTP must be of 6 digits"),
+});

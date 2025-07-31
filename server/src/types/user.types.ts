@@ -15,3 +15,10 @@ export interface UserData {
 export interface UpdateResponse {
   result: Omit<User, "password" | "refreshToken">;
 }
+
+export interface ResetPassword {
+  email: string;
+  newPassword: string;
+  confirmNewPassword: string;
+  otp: string;
+}

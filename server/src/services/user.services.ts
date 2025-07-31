@@ -1,9 +1,11 @@
 import { User } from "../../generated/prisma/index.js";
+import bcrypt from "bcrypt";
 import { safeUserSelect } from "../contants.ts";
 import { prisma } from "../db/config.ts";
-import { ImageUpload, UpdateResponse, UserData } from "../types/user.types.ts";
+import { ImageUpload, ResetPassword, UpdateResponse, UserData } from "../types/user.types.ts";
 import { AppError } from "../utils/app-error.ts";
 import { deleteFromCloudinary, uploadToCloudinary } from "../utils/cloudinary.ts";
+import sendMail from "../utils/nodemailer.ts";
 
 export const uploadPicture = async (data: ImageUpload): Promise<string> => {
   if (!data.imagePath) {
@@ -97,10 +99,89 @@ export const getMe = async (id: string): Promise<any> => {
     where: {
       id,
     },
-    select:safeUserSelect
+    select: safeUserSelect,
+  });
+  if (!user) {
+    throw new AppError(404, "User does not exist");
+  }
+  return user;
+};
+
+export const sendOTP = async (email: string): Promise<void> => {
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
+    },
   });
   if (!user) {
     throw new AppError(404, "User doesnt exist");
   }
-  return user;
+  const userOtp = Math.floor(100000 + Math.random() * 900000).toString();
+  //hash the otp
+  const salt = await bcrypt.genSalt(10);
+  const hashedOtp = await bcrypt.hash(userOtp, salt);
+  //Delete if their are existing otp with the same email
+  await prisma.otp.deleteMany({
+    where: {
+      email: email,
+    },
+  });
+  //Save the hashed otp in the database
+  await prisma.otp.create({
+    data: {
+      email,
+      otp: hashedOtp,
+    },
+  });
+  await sendMail(email, userOtp);
+};
+
+export const reset = async (data: ResetPassword): Promise<void> => {
+  const user = await prisma.user.findUnique({
+    where: {
+      email: data.email,
+    },
+  });
+  if (!user) {
+    throw new AppError(404, "User doesnt exist");
+  }
+  const otp = await prisma.otp.findUnique({
+    where: {
+      email: data.email,
+    },
+  });
+  const expiryTime = 5 * 60 * 1000;
+  if (!otp) {
+    throw new AppError(404, "OTP not found. Please request a new one.");
+  }
+  if (Date.now() - otp.createdAt.getTime() > expiryTime) {
+    await prisma.otp.deleteMany({
+      where: {
+        email: data.email,
+      },
+    });
+    throw new AppError(400, "OTP has expired. Please request a new one.");
+  }
+  const otpMatches = await bcrypt.compare(data.otp, otp.otp);
+  if (!otpMatches) {
+    throw new AppError(401, "OTP is incorrect. Please check and try again.");
+  }
+  if (data.newPassword !== data.confirmNewPassword) {
+    throw new AppError(400, "New password and confirm password do not match.");
+  }
+  const salt = await bcrypt.genSalt(10);
+  const hashedPassword = await bcrypt.hash(data.confirmNewPassword, salt);
+  await prisma.user.update({
+    where: {
+      email: data.email,
+    },
+    data: {
+      password: hashedPassword,
+    },
+  });
+  await prisma.otp.deleteMany({
+    where: {
+      email: data.email,
+    },
+  });
 };
