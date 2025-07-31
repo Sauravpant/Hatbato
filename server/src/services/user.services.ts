@@ -1,3 +1,5 @@
+import { User } from "../../generated/prisma/index.js";
+import { safeUserSelect } from "../contants.ts";
 import { prisma } from "../db/config.ts";
 import { ImageUpload, UpdateResponse, UserData } from "../types/user.types.ts";
 import { AppError } from "../utils/app-error.ts";
@@ -88,4 +90,17 @@ export const updateUser = async (data: UserData): Promise<UpdateResponse> => {
   });
   const { password, refreshToken, ...result } = user;
   return { result };
+};
+
+export const getMe = async (id: string): Promise<any> => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+    select:safeUserSelect
+  });
+  if (!user) {
+    throw new AppError(404, "User doesnt exist");
+  }
+  return user;
 };

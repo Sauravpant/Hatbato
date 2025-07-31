@@ -2,7 +2,7 @@ import { Request, response, Response } from "express";
 import { asyncHandler } from "../utils/async-handler.ts";
 import { AppError } from "../utils/app-error.ts";
 import { ApiResponse } from "../utils/api-response.ts";
-import { deleteAccount, deletePicture, updateUser, uploadPicture } from "../services/user.services.ts";
+import { deleteAccount, deletePicture, getMe, updateUser, uploadPicture } from "../services/user.services.ts";
 import { User } from "../../generated/prisma/index.js";
 import { updateUserSchema } from "../validators/user.validator.ts";
 
@@ -45,4 +45,9 @@ export const deleteUser = asyncHandler(async (req: AuthenticatedRequest, res: Re
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, {}, "User deleted successfully"));
+});
+
+export const getUser = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+  const user = await getMe(req.user.id);
+  return res.status(200).json(new ApiResponse(200, user, "User fetched successfully"));
 });
