@@ -13,23 +13,35 @@ enum Role {
   admin
 }
 
+enum NotificationType {
+  account_created
+  account_verified
+  order_placed
+  product_added
+  password_changed
+}
+
 model User {
-  id              String    @id @default(uuid())
+  id              String         @id @default(uuid())
   name            String
-  email           String    @unique
+  email           String         @unique
   password        String
-  role            Role      @default(user)
+  role            Role           @default(user)
   imageUrl        String? // Display URL of user's profile image
   imagePublicId   String? // Cloudinary public ID for image deletion/updating
   address         String // User's address/profile location
-  contactNumber   String    @unique
+  contactNumber   String         @unique
   refreshToken    String? // For JWT refresh token
-  isVerified      Boolean   @default(false) // Email verification status
+  isVerified      Boolean        @default(false) // Email verification status
   products        Product[]
-  reviewsGiven    Review[]  @relation("Reviewer")
-  reviewsReceived Review[]  @relation("Seller")
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  notification    Notification[]
+  reviewsGiven    Review[]       @relation("Reviewer")
+  reviewsReceived Review[]       @relation("Seller")
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  @@index([id])
+  @@index([email])
 }
 
 model Product {
@@ -73,4 +85,16 @@ model Otp {
   email     String   @id // Email to which OTP was sent
   otp       String // OTP code
   createdAt DateTime @default(now())
+}
+
+model Notification {
+  id        String           @id @default(uuid())
+  userId    String
+  type      NotificationType
+  message   String // Notification message
+  read      Boolean          @default(false) // Read status
+  createdAt DateTime         @default(now())
+  user      User             @relation(fields: [userId], references: [id])
+
+  @@index([userId])
 }
