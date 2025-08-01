@@ -21,6 +21,15 @@ enum NotificationType {
   password_changed
 }
 
+enum ProductStatus {
+  new
+  like_new
+  used
+  refurbished
+  damaged
+  for_parts
+}
+
 model User {
   id              String         @id @default(uuid())
   name            String
@@ -40,34 +49,41 @@ model User {
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
-  @@index([id])
   @@index([email])
 }
 
 model Product {
-  id            Int       @id @default(autoincrement())
-  title         String
-  description   String?
-  price         Float
-  address       String
-  latitude      Float // Geographic coordinate
-  longitude     Float // Geographic coordinate
-  imageUrl      String // Image URL for display
-  imagePublicId String // Cloudinary public ID for image management
-  postedAt      DateTime  @default(now())
-  user          User      @relation(fields: [userId], references: [id])
-  userId        String
-  category      Category? @relation(fields: [categoryId], references: [id])
-  categoryId    Int?
+  id                Int                                  @id @default(autoincrement())
+  title             String
+  description       String
+  price             Decimal                              @db.Decimal(10, 2)
+  address           String
+  location          Unsupported("geography(point,4326)") //PostgresSQL PostGIS
+  latitude          Float // Geographic coordinate
+  longitude         Float // Geographic coordinate
+  imageUrl          String // Image URL for display
+  imagePublicId     String // Cloudinary public ID for image management
+  deliveryAvailable Boolean
+  status            ProductStatus
+  postedAt          DateTime                             @default(now())
+  user              User                                 @relation(fields: [userId], references: [id])
+  userId            String
+  category          Category                             @relation(fields: [categoryId], references: [id])
+  categoryId        Int
+
+  @@index([latitude, longitude])
+  @@index([title])
 }
 
 model Category {
-  id        Int       @id @default(autoincrement())
-  name      String    @unique
-  slug      String    @unique
-  products  Product[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id          Int       @id @default(autoincrement())
+  name        String    @unique
+  slogan      String
+  description String
+  slug        String    @unique
+  products    Product[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 }
 
 model Review {
