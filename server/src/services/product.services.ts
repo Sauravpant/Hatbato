@@ -1,6 +1,7 @@
-import { safeUserSelect } from "../contants.ts";
+import { Product } from "../../generated/prisma/index.js";
+import { productSelect, safeUserSelect } from "../contants.ts";
 import { prisma } from "../db/config.ts";
-import { ProductType } from "../types/product.types.ts";
+import { ProductResult, ProductType } from "../types/product.types.ts";
 import { AppError } from "../utils/app-error.ts";
 import { uploadToCloudinary } from "../utils/cloudinary.ts";
 
@@ -32,7 +33,7 @@ export const create = async (productData: ProductType): Promise<any> => {
     throw new AppError(500, "Failed to upload image. Please try again.");
   }
 
-  // Insert product into database 
+  // Insert product into database
   const result = await prisma.$queryRaw`
     INSERT INTO "Product" (
       title, description, price, address,
@@ -58,4 +59,83 @@ export const create = async (productData: ProductType): Promise<any> => {
   `;
   const { imagePublicId, ...product } = result[0];
   return { product, user, category };
+};
+
+export const getById = async (productId: string): Promise<any> => {
+  const product = await prisma.product.findUnique({
+    where: {
+      id: productId,
+    },
+    include: {
+      category: {
+        select: {
+          name: true,
+        },
+      },
+      user: {
+        select: {
+          id: true,
+          name: true,
+          address: true,
+          contactNumber: true,
+          email: true,
+          isVerified: true,
+          imageUrl: true,
+        },
+      },
+    },
+  });
+  if (!product) {
+    throw new AppError(404, "Product doesnt exist");
+  }
+  const avgRatings = await prisma.review.aggregate({
+    _avg: {
+      rating: true,
+    },
+    where: {
+      sellerId: product.user.id,
+    },
+  });
+
+  const totalProducts = await prisma.product.aggregate({
+    _count: {
+      userId: true,
+    },
+    where: {
+      userId: product.user.id,
+    },
+  });
+  const { id, ...userData } = product.user;
+  return {
+    ...product,
+    totalProducts: totalProducts._count.userId,
+    user: {
+      ...userData,
+      averageRating: avgRatings._avg.rating,
+    },
+  };
+};
+
+export const getByCategory = async (productSlug: string) => {
+  const category = await prisma.category.findUnique({
+    where: {
+      slug: productSlug,
+    },
+    include: {
+      products: {
+        select: {
+          ...productSelect,
+          user:{
+            select:{
+              name:true
+            }
+          }
+        },
+      },
+    },
+  });
+  if (!category) {
+    throw new AppError(404, "Catergory doesnt exist");
+  }
+  return category;
 };
