@@ -1,11 +1,12 @@
-import { Product } from "../../generated/prisma/index.js";
-import { productSelect, safeUserSelect } from "../contants.ts";
+import type { Product } from "../../generated/prisma/index.js";
+import { safeUserSelect } from "../contants.ts";
 import { prisma } from "../db/config.ts";
-import { ProductResult, ProductType } from "../types/product.types.ts";
+import { ProductById, ProductType, UpdateProduct } from "../types/product.types.ts";
 import { AppError } from "../utils/app-error.ts";
-import { uploadToCloudinary } from "../utils/cloudinary.ts";
+import { deleteFromCloudinary, uploadToCloudinary } from "../utils/cloudinary.ts";
+import { GetProduct } from "../validators/product.validator.ts";
 
-export const create = async (productData: ProductType): Promise<any> => {
+export const create = async (productData: ProductType): Promise<void> => {
   // Check if user exists
   const user = await prisma.user.findUnique({
     where: {
@@ -57,11 +58,9 @@ export const create = async (productData: ProductType): Promise<any> => {
       ${category.id}
     ) RETURNING id, title, description, price, address, latitude, longitude, "imageUrl", "imagePublicId", "deliveryAvailable", status, "postedAt", "userId", "categoryId";
   `;
-  const { imagePublicId, ...product } = result[0];
-  return { product, user, category };
 };
 
-export const getById = async (productId: string): Promise<any> => {
+export const getById = async (productId: string): Promise<ProductById> => {
   const product = await prisma.product.findUnique({
     where: {
       id: productId,
@@ -108,6 +107,7 @@ export const getById = async (productId: string): Promise<any> => {
   const { id, ...userData } = product.user;
   return {
     ...product,
+    categoryId: product.categoryId,
     totalProducts: totalProducts._count.userId,
     user: {
       ...userData,
@@ -116,26 +116,193 @@ export const getById = async (productId: string): Promise<any> => {
   };
 };
 
-export const getByCategory = async (productSlug: string) => {
-  const category = await prisma.category.findUnique({
+export const deleteItem = async (productId: string, userId: string): Promise<void> => {
+  const product = await prisma.product.findUnique({
     where: {
-      slug: productSlug,
+      id: productId,
+    },
+  });
+  if (!product) {
+    throw new AppError(404, "Product doesnt exist");
+  }
+  if (product.userId !== userId) {
+    throw new AppError(401, "Unauthorized to delete the product");
+  }
+  await prisma.product.delete({
+    where: {
+      id: productId,
+    },
+  });
+};
+
+export const getMyItems = async (userId: string): Promise<Product[]> => {
+  const products = await prisma.product.findMany({
+    where: {
+      userId,
     },
     include: {
-      products: {
+      category: {
         select: {
-          ...productSelect,
-          user:{
-            select:{
-              name:true
-            }
-          }
+          name: true,
         },
       },
     },
   });
-  if (!category) {
-    throw new AppError(404, "Catergory doesnt exist");
+  return products;
+};
+export const updateItem = async (productData: UpdateProduct, productId: string, userId: string, imagePath?: string): Promise<Product> => {
+  const product = await prisma.product.findUnique({
+    where: {
+      id: productId,
+    },
+  });
+  if (!product) {
+    throw new AppError(404, "Product doesnt exist");
   }
-  return category;
+  if (product.userId !== userId) {
+    throw new AppError(401, "Unauthorized to update the product");
+  }
+  let uploadedImage = null;
+  let imagePublicId = product.imagePublicId;
+  let imageUrl = product.imageUrl;
+
+  //If the new image is uploaded delete the old image from the cloud and upload the new one
+
+  if (imagePath) {
+    await deleteFromCloudinary(product.imagePublicId);
+    uploadedImage = await uploadToCloudinary(imagePath);
+    imagePublicId = uploadedImage.public_id;
+    imageUrl = uploadedImage.secure_url;
+  }
+
+  let categoryId;
+  if (productData?.category) {
+    const category = await prisma.category.findFirst({
+      where: {
+        name: productData.category,
+      },
+    });
+    if (!category) {
+      throw new AppError(404, "Category doesnt exist");
+    }
+    categoryId = category.id;
+  }
+  const updateData: any = {
+    ...(productData.title && { title: productData.title }),
+    ...(productData.description && { description: productData.description }),
+    ...(productData.price && { price: productData.price }),
+    ...(productData.status && { status: productData.status }),
+    ...(categoryId && { categoryId }),
+    ...(uploadedImage && {
+      imageUrl: uploadedImage.secure_url,
+      imagePublicId: uploadedImage.public_id,
+    }),
+  };
+
+  const updatedProduct = await prisma.product.update({
+    where: {
+      id: productId,
+    },
+    data: {
+      ...updateData,
+    },
+  });
+  return updatedProduct;
+};
+
+export const getAll = async (filters: GetProduct): Promise<any> => {
+  const { search, minPrice, maxPrice, category, status, sort, lat, lng, page = 1, limit = 10 } = filters;
+  let { radius } = filters;
+  radius *= 1000;
+
+  const whereClauses: string[] = [];
+  const values: any[] = [];
+  let index = 1;
+  //Filter by search
+  if (search) {
+    //ILIKE in PostgreSQL helps searching the patterns ignoring the case sensitivity
+    whereClauses.push(`("title" ILIKE $${index} OR "description" ILIKE $${index})`);
+    values.push(`%${search}%`);
+    index++;
+  }
+  // Filter by price
+  if (minPrice !== undefined) {
+    whereClauses.push(`"price" >= $${index++}`);
+    values.push(minPrice);
+  }
+
+  if (maxPrice !== undefined) {
+    whereClauses.push(`"price" <= $${index++}`);
+    values.push(maxPrice);
+  }
+
+  // Filter by status (new,old,like_new etc)
+  if (status) {
+    whereClauses.push(`"status" = $${index++}`);
+    values.push(status);
+  }
+
+  // Filter by category
+  if (category) {
+    const catg = await prisma.category.findFirst({ where: { name: category } });
+    if (!catg) {
+      throw new AppError(404, "Category doesnt exist");
+    }
+    whereClauses.push(`"categoryId" IN (SELECT id FROM "Category" WHERE name = $${index++})`);
+    values.push(category);
+  }
+
+  // Geo filtering using PostGIS (Filter within some distance from users location)
+
+  if (lat !== undefined && lng !== undefined && radius !== undefined) {
+    whereClauses.push(`
+      ST_DWithin(
+        "location",
+        ST_MakePoint($${index++}, $${index++})::geography,
+        $${index++}
+      )
+    `);
+    values.push(lng, lat, radius);
+  }
+
+  // Pagination & Sorting
+  const offset = (page - 1) * limit;
+  const orderBy = sort === "asc" ? `"postedAt" ASC` : `"postedAt" DESC`;
+
+  // Combine all the where logic
+  const whereClause = whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
+
+  //Using raw query as prisma doesnt support PostGIS
+  const products = await prisma.$queryRawUnsafe(
+    `
+  SELECT id, title, description, price, address, latitude, longitude, "imageUrl", "imagePublicId", "deliveryAvailable", status, "postedAt", "userId", "categoryId"
+  FROM "Product"
+  ${whereClause}
+  ORDER BY ${orderBy}
+  LIMIT $${index++} OFFSET $${index}
+  `,
+    ...values,
+    limit,
+    offset
+  );
+
+  const countResult = await prisma.$queryRawUnsafe(
+    `
+    SELECT COUNT(*) FROM "Product"
+    ${whereClause}
+    `,
+    ...values
+  );
+
+  const total = Number(countResult[0].count);
+  const totalPages = Math.ceil(total / limit);
+  return {
+    products,
+    pagination: {
+      total,
+      page,
+      limit,
+      totalPages,
+    },
+  };
 };
