@@ -22,6 +22,10 @@ enum NotificationType {
   account_created
   account_verified
   order_placed
+  order_accepted
+  order_rejected
+  order_received
+  order_cancelled
   product_added
   password_changed
 }
@@ -87,7 +91,7 @@ model Product {
   category          Category                             @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId        String
   reports           Report[]                             @relation("ReportedProduct")
-  order             Order?
+  order             Order[]
 
   @@index([latitude, longitude])
   @@index([title])

@@ -22,12 +22,15 @@ import notificationRoute from "./routes/notification.routes.ts";
 import productRoutes from "./routes/product.routes.ts";
 import reportRoutes from "./routes/report.routes.ts";
 import reviewRoutes from "./routes/review.routes.ts";
+import orderRoutes from "./routes/order.routes.ts";
+
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/user/notification", notificationRoute);
 app.use("/api/v1/user/product", productRoutes);
 app.use("/api/v1/report", reportRoutes);
 app.use("/api/v1/review", reviewRoutes);
-app.use(errorMiddleware);
+app.use("/api/v1/order", orderRoutes);
+
 app.use(errorMiddleware);
 export default app;
