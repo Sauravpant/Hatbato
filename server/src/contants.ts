@@ -11,3 +11,22 @@ export const safeUserSelect = {
   createdAt: true,
   updatedAt: true,
 };
+
+
+//Product
+
+export const productSelect = {
+  id: true,
+  title: true,
+  description: true,
+  price: true,
+  address: true,
+  latitude: true,
+  longitude: true,
+  imageUrl: true,
+  deliveryAvailable: true,
+  status: true,
+  postedAt: true,
+  userId: true,
+  categoryId: true,
+};

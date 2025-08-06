@@ -9,11 +9,12 @@ import {
   getSellerStats,
 } from "../controllers/review.controller.ts";
 import { verifyJWT } from "../middlewares/auth.middleware.ts";
+import { verifyUser } from "../middlewares/user-verify.middleware.ts";
 
 const router = Router();
 
-router.post("/:sellerId", verifyJWT, createReview);
-router.patch("/update/:reviewId", verifyJWT, updateReview);
+router.post("/:sellerId", verifyJWT, verifyUser,createReview);
+router.patch("/update/:reviewId", verifyJWT, verifyUser,updateReview);
 router.delete("/delete/:reviewId", verifyJWT, deleteReview);
 router.get("/my/given", verifyJWT, getMyGivenReviews);
 router.get("/my/received", verifyJWT, getMyReceivedReviews);

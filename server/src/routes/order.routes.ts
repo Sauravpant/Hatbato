@@ -1,5 +1,6 @@
 import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.ts";
+import { verifyUser } from "../middlewares/user-verify.middleware.ts";
 import {
   createBuyRequest,
   getMyRequests,
@@ -11,11 +12,11 @@ import {
 
 const router = Router();
 
-router.post("/request/:productId", verifyJWT, createBuyRequest);
-router.get("/request/my", verifyJWT, getMyRequests);
-router.get("/request/received", verifyJWT, getReceivedRequests);
-router.patch("/request/accept/:orderId", verifyJWT, acceptOrder);
-router.patch("/request/reject/:orderId", verifyJWT, rejectOrder);
-router.delete("/request/delete/:orderId", verifyJWT, cancelOrderRequest);
+router.post("/request/:productId", verifyJWT, verifyUser, createBuyRequest);
+router.get("/request/my", verifyJWT, verifyUser, getMyRequests);
+router.get("/request/received", verifyJWT, verifyUser, getReceivedRequests);
+router.patch("/request/accept/:orderId", verifyJWT, verifyUser, acceptOrder);
+router.patch("/request/reject/:orderId", verifyJWT, verifyUser, rejectOrder);
+router.delete("/request/delete/:orderId", verifyJWT, verifyUser, cancelOrderRequest);
 
 export default router;
