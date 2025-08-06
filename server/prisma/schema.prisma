@@ -35,6 +35,12 @@ enum ProductStatus {
   for_parts
 }
 
+enum OrderStatus {
+  pending
+  accepted
+  rejected
+}
+
 model User {
   id              String         @id @default(uuid())
   name            String
@@ -53,6 +59,8 @@ model User {
   reviewsReceived Review[]       @relation("Seller")
   reportsMade     Report[]       @relation("ReportAuthor")
   userReports     Report[]       @relation("ReportedUser")
+  ordersMade      Order[]        @relation("Buyer")
+  ordersReceived  Order[]        @relation("Seller")
   createdAt       DateTime       @default(now())
   updatedAt       DateTime       @updatedAt
 
@@ -73,15 +81,32 @@ model Product {
   deliveryAvailable Boolean
   status            ProductStatus
   postedAt          DateTime                             @default(now())
+  isBought          Boolean                              @default(false)
   user              User                                 @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId            String
   category          Category                             @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   categoryId        String
   reports           Report[]                             @relation("ReportedProduct")
+  order             Order?
 
   @@index([latitude, longitude])
   @@index([title])
   @@index([userId])
+}
+
+model Order {
+  id        String      @id @default(uuid())
+  product   Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId String      @unique
+  buyer     User        @relation("Buyer", fields: [buyerId], references: [id], onDelete: Cascade)
+  buyerId   String
+  seller    User        @relation("Seller", fields: [sellerId], references: [id], onDelete: Cascade)
+  sellerId  String
+  status    OrderStatus @default(pending)
+  createdAt DateTime    @default(now())
+
+  @@index([buyerId])
+  @@index([sellerId])
 }
 
 model Category {
