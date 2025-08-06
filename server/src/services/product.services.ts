@@ -268,6 +268,7 @@ export const getAll = async (filters: GetProduct): Promise<any> => {
   // Pagination & Sorting
   const offset = (page - 1) * limit;
   const orderBy = sort === "asc" ? `"postedAt" ASC` : `"postedAt" DESC`;
+  whereClauses.push(`"isBought" = false`);
 
   // Combine all the where logic
   const whereClause = whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
