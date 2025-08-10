@@ -33,6 +33,7 @@ export const handleUserReport = async (data: ReportType, userId: string, reportI
 
   await prisma.report.create({
     data: {
+      status: "pending",
       reason: data.reason,
       description: data.description,
       reportedById: userId,
@@ -75,6 +76,7 @@ export const handleProductReport = async (data: ReportType, userId: string, prod
 
   await prisma.report.create({
     data: {
+      status: "pending",
       reason: data.reason,
       description: data.description,
       reportedById: userId,

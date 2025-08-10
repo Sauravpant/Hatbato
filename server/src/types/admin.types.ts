@@ -1,3 +1,5 @@
+import { Category } from "../../generated/prisma/index.js";
+
 export interface UserStats {
   totalUsers: number;
   activeUsers: number;
@@ -71,4 +73,95 @@ export interface UserProfile {
   totalOrdersReceived: number;
   totalReportsMade: number;
   totalReviewsGiven: number;
+}
+
+export interface CategoryDetails {
+  category: Category;
+  totalProducts: number;
+  soldProducts: number;
+  unsoldProducts: number;
+}
+
+//Review
+export interface PaginatedReviews {
+  data: ReviewItem[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
+export interface ReviewItem {
+  id: string;
+  rating: number;
+  comment?: string;
+  reviewer: {
+    id: string;
+    name: string;
+  };
+  seller: {
+    id: string;
+    name: string;
+  };
+  createdAt: Date;
+}
+
+//Order Types
+export interface OrderFilters {
+  page?: number;
+  limit?: number;
+  status?: "pending" | "accepted" | "rejected";
+  sortOrder?: "asc" | "desc";
+}
+
+export interface PaginatedOrders {
+  data: OrderItem[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
+export interface OrderItem {
+  id: string;
+  status: "pending" | "accepted" | "rejected";
+  createdAt: Date;
+  product: {
+    id: string;
+    title: string;
+  };
+  buyer: {
+    id: string;
+    name: string;
+  };
+  seller: {
+    id: string;
+    name: string;
+  };
+}
+
+export interface PaginatedReports {
+  data: ReportItem[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
+export interface ReportItem {
+  id: string;
+  reason: string;
+  description: string;
+  reportFor: "user" | "product";
+  status: "pending" | "resolved";
+  createdAt: Date;
+  reportedBy: {
+    id: string;
+    name: string;
+  };
+  reportedUser?: {
+    id: string;
+    name: string;
+  };
+  reportedProduct?: {
+    id: string;
+    title: string;
+  };
 }

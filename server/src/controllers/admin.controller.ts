@@ -9,8 +9,27 @@ import {
   deleteUserService,
   getAllUsersService,
   getUserByIdService,
+  addCategoryService,
+  updateCategoryService,
+  deleteCategoryService,
+  getAlLCategoryService,
+  getCategoryDetailsService,
+  deleteProductService,
+  deleteReviewService,
+  getAllReviewsService,
+  getAllOrdersService,
+  getAllReportsService,
+  resolveReportService,
+  deleteReportService,
 } from "../services/admin.services.ts";
-import { getAllUsersSchema } from "../validators/admin.validators.ts";
+import {
+  addCategorySchema,
+  getAllReviewsSchema,
+  getAllUsersSchema,
+  updateCategorySchema,
+  getAllOrdersSchema,
+  getAllReportsSchema,
+} from "../validators/admin.validators.ts";
 
 //Dashboard stats controllers
 export const getUserStats = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
@@ -55,3 +74,79 @@ export const deleteUser = asyncHandler(async (req: Request, res: Response): Prom
   await deleteUserService(userId);
   return res.status(200).json(new ApiResponse(200, null, "User deleted successfully"));
 });
+
+//Category Management
+export const addCategory = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
+  const validatedData = await addCategorySchema.parseAsync(req.body);
+  const result = await addCategoryService(validatedData);
+  return res.status(201).json(new ApiResponse(201, result, "Category added successfully"));
+});
+
+export const updateCategory = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
+  const { categoryId } = req.params;
+  const validatedData = await updateCategorySchema.parseAsync(req.body);
+  const result = await updateCategoryService(categoryId, validatedData);
+  return res.status(201).json(new ApiResponse(201, result, "Category updated successfully"));
+});
+
+export const deleteCategory = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
+  const { categoryId } = req.params;
+  await deleteCategoryService(categoryId);
+  return res.status(200).json(new ApiResponse(200, null, "Category deleted successfully"));
+});
+
+export const getAllCategory = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
+  const result = await getAlLCategoryService();
+  return res.status(201).json(new ApiResponse(201, result, "Category fetched successfully"));
+});
+
+export const getCategoryDetails = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
+  const { categoryId } = req.params;
+  const result = await getCategoryDetailsService(categoryId);
+  return res.status(201).json(new ApiResponse(201, result, "Category detauls fetched successfully"));
+});
+
+//Product management
+export const deleteProduct = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
+  const { productId } = req.params;
+  await deleteProductService(productId);
+  return res.status(200).json(new ApiResponse(200, null, "Product deleted successfully"));
+});
+
+//Review Management
+export const getAllReviews = async (req: Request, res: Response) => {
+  const validatedData = await getAllReviewsSchema.parseAsync(req.query);
+  const reviews = await getAllReviewsService(validatedData);
+  return res.status(200).json(new ApiResponse(200, reviews, "Reviews fetched successfully"));
+};
+
+export const deleteReview = async (req: Request, res: Response) => {
+  const { reviewId } = req.params;
+  await deleteReviewService(reviewId);
+  return res.status(200).json(new ApiResponse(200, null, "Review deleted successfully"));
+};
+//Order Management
+export const getAllOrdersController = async (req: Request, res: Response) => {
+  const parseResult = await getAllOrdersSchema.parseAsync(req.query);
+  const orders = await getAllOrdersService(parseResult);
+  return res.status(200).json(new ApiResponse(200, orders, "Orders fetched successfully"));
+};
+
+//Report Management
+export const getAllReportsController = async (req: Request, res: Response) => {
+  const validatedData = await getAllReportsSchema.parseAsync(req.query);
+  const reports = await getAllReportsService(validatedData);
+  return res.status(200).json(new ApiResponse(200, reports, "Reports fetched successfully"));
+};
+
+export const resolveReportController = async (req: Request, res: Response) => {
+  const { reportId } = req.params;
+  await resolveReportService(reportId);
+  return res.status(200).json(new ApiResponse(200, null, "Report resolved successfully"));
+};
+
+export const deleteReportController = async (req: Request, res: Response) => {
+  const { reportId } = req.params;
+  await deleteReportService(reportId);
+  return res.status(200).json(new ApiResponse(200, null, "Report deleted successfully"));
+};
