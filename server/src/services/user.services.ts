@@ -185,3 +185,26 @@ export const reset = async (data: ResetPassword): Promise<void> => {
     },
   });
 };
+
+export const deactivate = async (userId: string): Promise<void> => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+    select: {
+      id: true,
+    },
+  });
+  if (!user) {
+    throw new AppError(404, "User not found");
+  }
+  await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      isActive: false,
+      refreshToken: "",
+    },
+  });
+};

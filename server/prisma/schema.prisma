@@ -18,6 +18,11 @@ enum ReportFor {
   product
 }
 
+enum ReportStatus {
+  resolved
+  pending
+}
+
 enum NotificationType {
   account_created
   account_verified
@@ -55,6 +60,7 @@ model User {
   imagePublicId   String?
   address         String
   contactNumber   String         @unique
+  isActive        Boolean        @default(true)
   refreshToken    String?
   isVerified      Boolean        @default(false)
   products        Product[]
@@ -154,17 +160,18 @@ model Notification {
 }
 
 model Report {
-  id                String    @id @default(uuid())
+  id                String       @id @default(uuid())
   reason            String
   description       String
   reportFor         ReportFor
   reportedById      String
   reportedProductId String?
   reportedUserId    String?
-  reportedBy        User      @relation("ReportAuthor", fields: [reportedById], references: [id], onDelete: Cascade)
-  reportedProduct   Product?  @relation("ReportedProduct", fields: [reportedProductId], references: [id], onDelete: Cascade)
-  reportedUser      User?     @relation("ReportedUser", fields: [reportedUserId], references: [id], onDelete: Cascade)
-  createdAt         DateTime  @default(now())
+  status            ReportStatus
+  reportedBy        User         @relation("ReportAuthor", fields: [reportedById], references: [id], onDelete: Cascade)
+  reportedProduct   Product?     @relation("ReportedProduct", fields: [reportedProductId], references: [id], onDelete: Cascade)
+  reportedUser      User?        @relation("ReportedUser", fields: [reportedUserId], references: [id], onDelete: Cascade)
+  createdAt         DateTime     @default(now())
 
   @@index([reportedProductId])
   @@index([reportedUserId])

@@ -1,6 +1,7 @@
 import { Router } from "express";
 import { verifyJWT } from "../middlewares/auth.middleware.ts";
 import {
+  deactivateAccount,
   deleteProfilePicture,
   deleteUser,
   getUser,
@@ -19,4 +20,5 @@ router.delete("/delete-user", verifyJWT, deleteUser);
 router.patch("/update-details", verifyJWT, updateProfileDetails);
 router.post("/forget-password", sendOtp);
 router.patch("/reset-password", resetPassword);
+router.patch("/deactivate-account", verifyJWT, deactivateAccount);
 export default router;

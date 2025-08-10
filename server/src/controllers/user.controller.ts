@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../utils/async-handler.ts";
 import { AppError } from "../utils/app-error.ts";
 import { ApiResponse } from "../utils/api-response.ts";
-import { deleteAccount, deletePicture, getMe, updateUser, uploadPicture, sendOTP, reset } from "../services/user.services.ts";
+import { deleteAccount, deletePicture, getMe, updateUser, uploadPicture, sendOTP, reset, deactivate } from "../services/user.services.ts";
 import { User } from "../../generated/prisma/index.js";
 import { emailSchema, resetPasswordSchema, updateUserSchema } from "../validators/user.validator.ts";
 
@@ -64,4 +64,19 @@ export const resetPassword = asyncHandler(async (req: Request, res: Response) =>
   const validatedData = await resetPasswordSchema.parseAsync({ email, newPassword, confirmNewPassword, otp });
   await reset(validatedData);
   return res.status(200).json(new ApiResponse(200, {}, "Password reset successfully. Please log in again."));
+});
+
+//Controller to handle account deactivation
+export const deactivateAccount = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+  await deactivate(req.user.id);
+  const options = {
+    httpOnly: true,
+    secure: true,
+    sameSite: "strict" as const,
+  };
+  return res
+    .status(200)
+    .clearCookie("accessToken", options)
+    .clearCookie("refreshToken", options)
+    .json(new ApiResponse(200, null, "Account deactivated successfully.Login again to continue"));
 });

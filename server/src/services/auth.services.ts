@@ -50,15 +50,16 @@ export const login = async (data: LoginData): Promise<LoginResponse> => {
   }
   const accessToken = generateAccessToken(user.id);
   const refreshToken = generateRefreshToken(user.id);
-  await prisma.user.update({
+  const result=await prisma.user.update({
     where: {
       email: user.email,
     },
     data: {
       refreshToken: refreshToken,
+      isActive: true,
     },
   });
-  const { password, ...userData } = user;
+  const { password, ...userData } = result;
   return { accessToken, refreshToken, userData };
 };
 
