@@ -1,0 +1,59 @@
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import type { AuthState, LoginData, User } from "@/types/auth/types";
+import { login, logout } from "@/services/authServices";
+
+const initialState: AuthState = {
+  user: null,
+  isLoading: false,
+  isAuthenticated: false,
+  error: null,
+};
+
+//Login thunk
+export const loginUser = createAsyncThunk<User, LoginData, { rejectValue: string }>("auth/login", async (data: LoginData, thunkAPI) => {
+  try {
+    const user = await login(data);
+    return user;
+  } catch (err: any) {
+    return thunkAPI.rejectWithValue(err.response?.data?.message || "Login failed");
+  }
+});
+//Logout thunk
+export const logoutUser = createAsyncThunk<void, void, { rejectValue: string }>("auth/logout", async (_, thunkAPI) => {
+  try {
+    await logout();
+  } catch (err: any) {
+    return thunkAPI.rejectWithValue("Logout failed");
+  }
+});
+const authSlice = createSlice({
+  name: "auth",
+  initialState,
+  reducers: {},
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginUser.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.user = action.payload;
+        state.isAuthenticated = true;
+        state.isLoading = false;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload || "Login Failed";
+      })
+      .addCase(logoutUser.fulfilled, (state) => {
+        state.user = null;
+        state.isAuthenticated = false;
+        state.isLoading = false;
+        state.error = null;
+      })
+      .addCase(logoutUser.rejected, (state, action) => {
+        state.error = (action.payload as string) || "Logout failed";
+      });
+  },
+});
+
+export default authSlice.reducer;
