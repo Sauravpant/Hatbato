@@ -2,8 +2,15 @@ import { Review } from "../../generated/prisma/index.js";
 import { prisma } from "../db/config.ts";
 import { AppError } from "../utils/app-error.ts";
 import type { CreateReview, UpdateReview } from "../validators/review.validator.ts";
-
+import checkContent from "../utils/ai-client.ts";
 export const handleCreateReview = async (reviewData: CreateReview, sellerId: string, userId: string): Promise<void> => {
+  
+  //Check the review for any inappropriate content
+  const isNotSafe = await checkContent(`Review:${reviewData.comment}`);
+  if (isNotSafe) {
+    throw new AppError(400, "Inappropriate content detected");
+  }
+
   if (sellerId === userId) {
     throw new AppError(403, "You can't review yourself.");
   }

@@ -2,6 +2,7 @@ import type { Product } from "../../generated/prisma/index.js";
 import { safeUserSelect } from "../contants.ts";
 import { prisma } from "../db/config.ts";
 import { ProductById, ProductType, UpdateProduct } from "../types/product.types.ts";
+import checkContent from "../utils/ai-client.ts";
 import { AppError } from "../utils/app-error.ts";
 import { deleteFromCloudinary, uploadToCloudinary } from "../utils/cloudinary.ts";
 import { GetProduct } from "../validators/product.validator.ts";
@@ -18,10 +19,19 @@ export const create = async (productData: ProductType): Promise<void> => {
     throw new AppError(404, "User does not exist.");
   }
 
+  // Check if the content is inappropriate
+  const isNotSafe = await checkContent(`Title:${productData.title}, Description:${productData.description},Address:${productData.address}`);
+  if (isNotSafe) {
+    throw new AppError(400, "The product details contains some inappropriate words");
+  }
+
   // Check if category exists
   const category = await prisma.category.findFirst({
     where: {
       name: productData.category,
+    },
+    select: {
+      id: true,
     },
   });
   if (!category) {
@@ -37,11 +47,12 @@ export const create = async (productData: ProductType): Promise<void> => {
   // Insert product into database
   const result = await prisma.$queryRaw`
     INSERT INTO "Product" (
-      title, description, price, address,
+      id,title, description, price, address,
       location, latitude, longitude,
       "imageUrl", "imagePublicId", "deliveryAvailable",
       status, "postedAt", "userId", "categoryId"
     ) VALUES (
+      gen_random_uuid(),
       ${productData.title},
       ${productData.description},
       ${productData.price},
