@@ -123,7 +123,7 @@ export const refreshAccessToken = asyncHandler(async (req: Request, res: Respons
     throw new AppError(404, "User not found");
   }
   const newAccessToken = generateAccessToken(user.id);
-  const { password, ...data } = user;
+  const { password, refreshToken: token, ...data } = user;
   return res
     .status(200)
     .cookie("accessToken", newAccessToken, {

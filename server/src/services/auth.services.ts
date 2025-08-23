@@ -50,7 +50,7 @@ export const login = async (data: LoginData): Promise<LoginResponse> => {
   }
   const accessToken = generateAccessToken(user.id);
   const refreshToken = generateRefreshToken(user.id);
-  const result=await prisma.user.update({
+  const result = await prisma.user.update({
     where: {
       email: user.email,
     },
@@ -59,7 +59,7 @@ export const login = async (data: LoginData): Promise<LoginResponse> => {
       isActive: true,
     },
   });
-  const { password, ...userData } = result;
+  const { password, imagePublicId, refreshToken: token, ...userData } = result;
   return { accessToken, refreshToken, userData };
 };
 
@@ -74,7 +74,7 @@ export const logOut = async (userId: string): Promise<void> => {
   });
 };
 
-export const resetPassword = async (data: ResetPasswordData): Promise<Omit<User, "password">> => {
+export const resetPassword = async (data: ResetPasswordData): Promise<Omit<User, "password" | "refreshToken">> => {
   const user = await prisma.user.findUnique({
     where: {
       email: data.email,
@@ -105,7 +105,7 @@ export const resetPassword = async (data: ResetPasswordData): Promise<Omit<User,
       message: "Your password has been changed successfully.",
     },
   });
-  const { password, ...userData } = user;
+  const { password, refreshToken, ...userData } = user;
   return userData;
 };
 

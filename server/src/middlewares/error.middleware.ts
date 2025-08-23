@@ -7,8 +7,8 @@ const errorMiddleware = (err: any, req: Request, res: Response, next: NextFuncti
   if (err instanceof ZodError) {
     return res.status(400).json({
       success: false,
-      message: "Validation failed",
-      errors: err.issues,
+      errors: "Validation failed",
+      message: err.issues[0].message,
     });
   }
   // Handle custom AppError

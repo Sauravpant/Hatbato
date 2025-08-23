@@ -18,9 +18,8 @@ export const createProduct = asyncHandler(async (req: AuthenticatedRequest, res:
   if (!imagePath) {
     throw new AppError(400, "Product image is required.");
   }
-
-  // Create product in the database
-   await create({
+   // Create product in the database
+  await create({
     ...validatedData,
     userid: req.user.id,
     productImage: imagePath,
@@ -69,4 +68,3 @@ export const getAllProducts = asyncHandler(async (req: Request, res: Response): 
   const products = await getAll(validatedData);
   return res.status(200).json(new ApiResponse(200, products.products, "Products fetched successfully"));
 });
-

@@ -22,7 +22,7 @@ export interface RegistrationResponse {
 export interface LoginResponse {
   accessToken: string;
   refreshToken: string;
-  userData: Omit<User, "password">;
+  userData: Omit<User, "password"|"refreshToken"|"imagePublicId">;
 }
 
 export interface ResetPasswordData {
