@@ -6,7 +6,7 @@ export interface Search {
   setSearch: (value: string) => void;
 }
 
-export const SearchContext = createContext<Search | "">("");
+export const SearchContext = createContext<Search | undefined>(undefined);
 
 const SearchContextProvider = ({ children }: { children: ReactNode }) => {
 
