@@ -1,10 +1,11 @@
 import express, { Request, Response } from "express";
+import type { Express } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import errorMiddleware from "./middlewares/error.middleware.ts";
 import { rateLimit } from "express-rate-limit";
 
-const app = express();
+const app: Express = express();
 const limiter = rateLimit({
   windowMs: 10 * 60 * 1000,
   limit: 50, //
@@ -34,6 +35,7 @@ import reportRoutes from "./routes/report.routes.ts";
 import reviewRoutes from "./routes/review.routes.ts";
 import orderRoutes from "./routes/order.routes.ts";
 import adminRoutes from "./routes/admin.routes.ts";
+import categoryRoutes from "./routes/category.routes.ts";
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);
@@ -43,6 +45,7 @@ app.use("/api/v1/report", reportRoutes);
 app.use("/api/v1/review", reviewRoutes);
 app.use("/api/v1/order", orderRoutes);
 app.use("/api/v1/admin", adminRoutes);
+app.use("/api/v1/category", categoryRoutes);
 
 app.use((req: Request, res: Response) => {
   res.status(404).json({ status: 404, message: "Route not found" });
