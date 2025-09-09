@@ -1,4 +1,4 @@
-import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { createAsyncThunk, createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { AuthState, LoginData, User } from "@/types/auth/types";
 import { login, logout } from "@/services/authServices";
 
@@ -29,7 +29,12 @@ export const logoutUser = createAsyncThunk<void, void, { rejectValue: string }>(
 const authSlice = createSlice({
   name: "auth",
   initialState,
-  reducers: {},
+  reducers: {
+    setUser(state, action: PayloadAction<User>) {
+      state.user = action.payload;
+      state.isAuthenticated = true;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
@@ -56,4 +61,5 @@ const authSlice = createSlice({
   },
 });
 
+export const { setUser } = authSlice.actions;
 export default authSlice.reducer;
