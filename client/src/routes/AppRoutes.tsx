@@ -6,6 +6,7 @@ import SignupPage from "@/pages/auth/SignUpPage";
 import CategoryPage from "@/pages/user/CategoryPage";
 import { HeroSection } from "@/pages/user/home/HeroSection";
 import Products from "@/pages/user/Products";
+import SellProduct from "@/pages/user/SellProduct";
 import { Route, Routes } from "react-router-dom";
 const AppRoutes = () => {
   return (
@@ -15,6 +16,7 @@ const AppRoutes = () => {
         <Route path="/products" element={<Products />} />
         <Route path="/products/:category" element={<Products />}></Route>
         <Route path="/category" element={<CategoryPage />} />
+         <Route path="/sell" element={<SellProduct />} />
       </Route>
       {/* Authentication Routes */}
       <Route path="/auth/login" element={<LoginPage />} />
