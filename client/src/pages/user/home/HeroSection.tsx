@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { MdDashboard } from "react-icons/md";
 import { Link } from "react-router-dom";
 
 const words: string[] = ["Connect", "Buy", "Sell"];
@@ -14,7 +15,7 @@ export const HeroSection: React.FC = () => {
   }, []);
 
   return (
-    <section className="relative w-full h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 overflow-hidden">
+    <section className="relative w-full pt-12 h-screen flex items-center justify-center bg-gradient-to-br from-slate-900  via-blue-900 to-slate-900 overflow-hidden">
       <div className="absolute inset-0">
         <div className="absolute top-20 left-20 w-72 h-72 bg-blue-500/5 rounded-full "></div>
         <div className="absolute bottom-20 right-20 w-64 h-64 bg-cyan-400/10 rounded-lg rotate-45 "></div>
@@ -37,7 +38,7 @@ export const HeroSection: React.FC = () => {
 
       <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
         <div className="mb-8">
-          <h2 className="text-lg md:text-xl text-blue-300 font-light mb-2 tracking-wider">Buy and Sell in Your Community</h2>
+          <h2 className="text-lg md:text-xl text-blue-300 font-semibold mb-2 tracking-wider">Buy and Sell in Your Community</h2>
           <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-cyan-400 mx-auto rounded-full mb-6"></div>
         </div>
 
@@ -60,7 +61,7 @@ export const HeroSection: React.FC = () => {
             ))}
           </span>
         </h1>
-        <p className="mt-8 text-lg md:text-xl text-blue-100/90 max-w-2xl mx-auto leading-relaxed font-light">
+        <p className="mt-8 text-lg md:text-xl text-blue-100/90 max-w-2xl mx-auto leading-relaxed font-semibold">
           The seamless way to buy and sell within your community
           <span className="block mt-2 text-cyan-200 font-medium">No fees, no hassle.</span>
         </p>
