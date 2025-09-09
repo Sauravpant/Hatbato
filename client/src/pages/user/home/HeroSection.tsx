@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { MdDashboard } from "react-icons/md";
 import { Link } from "react-router-dom";
 
 const words: string[] = ["Connect", "Buy", "Sell"];
