@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getAllProducts } from "@/services/product.services";
@@ -6,8 +6,12 @@ import ProductsHeader from "@/components/common/ProductsHeader";
 import FiltersSidebar from "@/components/sidebar/FiltersSidebar";
 import ProductsGrid from "@/components/common/ProductsGrid";
 import PaginationWrapper from "@/components/common/PaginationWrapper";
+import { SearchContext } from "@/store/searchContext";
+import type { Search } from "@/store/searchContext";
 
 const Products = () => {
+  const context = useContext<Search | undefined>(SearchContext);
+  const searchData = context?.search;
   const [searchParams, setSearchParams] = useSearchParams();
   const [filtersOpen, setFiltersOpen] = useState(false);
   const [radius, setRadius] = useState<number>(Number(searchParams.get("radius")) || 0);
@@ -68,6 +72,15 @@ const Products = () => {
     setSearchParams(updated);
   };
 
+  useEffect(() => {
+    if (searchData !== undefined) {
+      const updated = new URLSearchParams(searchParams);
+      if (searchData) updated.set("search", searchData);
+      else updated.delete("search");
+      updated.set("page", "1");
+      setSearchParams(updated);
+    }
+  }, [searchData]);
   return (
     <div className="min-h-screen py-8 bg-gradient-to-br from-blue-50 to-indigo-100">
       <div className="container mx-auto px-4">
