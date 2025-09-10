@@ -249,7 +249,7 @@ export const getAll = async (filters: GetProduct): Promise<any> => {
 
   // Filter by status (new,old,like_new etc)
   if (status) {
-    whereClauses.push(`"status" = $${index++}`);
+    whereClauses.push(`"status" = $${index++}::"ProductStatus"`);
     values.push(status);
   }
 
