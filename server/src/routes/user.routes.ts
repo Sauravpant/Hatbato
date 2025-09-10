@@ -7,6 +7,7 @@ import {
   getUser,
   resetPassword,
   sendOtp,
+  submitForm,
   updateProfileDetails,
   uploadProfilePicture,
 } from "../controllers/user.controller.ts";
@@ -21,4 +22,5 @@ router.patch("/update-details", verifyJWT, updateProfileDetails);
 router.post("/forget-password", sendOtp);
 router.patch("/reset-password", resetPassword);
 router.patch("/deactivate-account", verifyJWT, deactivateAccount);
+router.post("/contact", submitForm);
 export default router;
