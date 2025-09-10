@@ -30,3 +30,11 @@ export const resetPasswordSchema = z.object({
     ),
   otp: z.string().max(6, "OTP must be of 6 digits").min(6, "OTP must be of 6 digits"),
 });
+
+export const submitFormSchema = z.object({
+  name: z.string().min(5, "Name is too short").max(30, "Name is too long"),
+  email: z.email({ pattern: z.regexes.email }),
+  category: z.enum(["general_enquiry", "report_an_issue", "partnership"]),
+  contact: z.string().min(10, "Phone number must be exactly 10 digits").max(10, "Phone number must be exactly 10 digits"),
+  message: z.string().min(5, "Message is too short").max(300, "Address is too long"),
+});

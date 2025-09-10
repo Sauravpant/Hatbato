@@ -22,3 +22,11 @@ export interface ResetPassword {
   confirmNewPassword: string;
   otp: string;
 }
+
+export interface ContactForm {
+  name: string;
+  email: string;
+  contact: string;
+  category: "general_enquiry" | "report_an_issue" | "partnership";
+  message: string;
+}

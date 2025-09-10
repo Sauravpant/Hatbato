@@ -2,9 +2,20 @@ import { Request, Response } from "express";
 import { asyncHandler } from "../utils/async-handler.ts";
 import { AppError } from "../utils/app-error.ts";
 import { ApiResponse } from "../utils/api-response.ts";
-import { deleteAccount, deletePicture, getMe, updateUser, uploadPicture, sendOTP, reset, deactivate } from "../services/user.services.ts";
+import {
+  deleteAccount,
+  deletePicture,
+  getMe,
+  updateUser,
+  uploadPicture,
+  sendOTP,
+  reset,
+  deactivate,
+  submitContact,
+} from "../services/user.services.ts";
 import { User } from "../../generated/prisma/index.js";
-import { emailSchema, resetPasswordSchema, updateUserSchema } from "../validators/user.validator.ts";
+import { emailSchema, resetPasswordSchema, submitFormSchema, updateUserSchema } from "../validators/user.validator.ts";
+import { ContactForm } from "../types/user.types.ts";
 
 interface AuthenticatedRequest extends Request {
   user: User;
@@ -79,4 +90,12 @@ export const deactivateAccount = asyncHandler(async (req: AuthenticatedRequest, 
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
     .json(new ApiResponse(200, null, "Account deactivated successfully.Login again to continue"));
+});
+
+//Controller to handle form submission
+
+export const submitForm = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
+  const data = await submitFormSchema.parseAsync(req.body);
+  await submitContact(data);
+  return res.status(200).json(new ApiResponse(200, null, "Form submitted successfully"));
 });

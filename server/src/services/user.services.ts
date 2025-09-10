@@ -2,7 +2,7 @@ import { User } from "../../generated/prisma/index.js";
 import bcrypt from "bcrypt";
 import { safeUserSelect } from "../contants.ts";
 import { prisma } from "../db/config.ts";
-import { ImageUpload, ResetPassword, UpdateResponse, UserData } from "../types/user.types.ts";
+import { ContactForm, ImageUpload, ResetPassword, UpdateResponse, UserData } from "../types/user.types.ts";
 import { AppError } from "../utils/app-error.ts";
 import { deleteFromCloudinary, uploadToCloudinary } from "../utils/cloudinary.ts";
 import sendMail from "../utils/nodemailer.ts";
@@ -206,5 +206,11 @@ export const deactivate = async (userId: string): Promise<void> => {
       isActive: false,
       refreshToken: "",
     },
+  });
+};
+
+export const submitContact = async (data: ContactForm): Promise<void> => {
+  await prisma.contact.create({
+    data,
   });
 };
