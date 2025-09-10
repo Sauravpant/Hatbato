@@ -6,7 +6,7 @@ const CategoryCard = ({ data }: { data: CategoryDetails }) => {
   const navigate = useNavigate();
 
   const handleCategory = (category: string) => {
-    navigate(`/products/${category}`);
+    navigate(`/products/?category=${category}`);
   };
 
   const getCategoryColor = (name: string) => {
