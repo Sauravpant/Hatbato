@@ -255,11 +255,11 @@ export const getAll = async (filters: GetProduct): Promise<any> => {
 
   // Filter by category
   if (category) {
-    const catg = await prisma.category.findFirst({ where: { name: category } });
+    const catg = await prisma.category.findFirst({ where: { slug: category } });
     if (!catg) {
       throw new AppError(404, "Category doesnt exist");
     }
-    whereClauses.push(`"categoryId" IN (SELECT id FROM "Category" WHERE name = $${index++})`);
+    whereClauses.push(`"categoryId" IN (SELECT id FROM "Category" WHERE slug  = $${index++})`);
     values.push(category);
   }
 
