@@ -13,7 +13,7 @@ import { Spinner } from "flowbite-react";
 const productStatus: string[] = ["new", "like_new", "used", "refurbished", "damaged", "for_parts"];
 
 const SellProduct = () => {
-  const { isLoading, data, error } = useQuery<CategoryDetails[]>({
+  const { data, error } = useQuery<CategoryDetails[]>({
     queryKey: ["productsCategory"],
     queryFn: getCategory,
     staleTime: Infinity,
@@ -112,13 +112,6 @@ const SellProduct = () => {
       toast.error(err.response?.data?.message || "Error submitting the form");
     }
   };
-
-  if (isLoading)
-    return (
-      <div className="flex justify-center items-center min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
 
   if (error)
     return (
