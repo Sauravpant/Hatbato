@@ -11,7 +11,7 @@ export interface CreateProduct {
 }
 
 export interface Product {
-  id:string;
+  id: string;
   title: string;
   description: string;
   price: number;
@@ -20,4 +20,33 @@ export interface Product {
   deliveryAvailable: boolean;
   status: string;
   postedAt: string | Date;
+}
+
+export interface PaginationWrapperProps {
+  totalPages: number;
+  currentPage: number;
+  goToPage: (page: number) => void;
+}
+
+export interface ProductsGridProps {
+  products: any;
+  isLoading: boolean;
+  error: any;
+}
+
+
+export interface ProductsHeaderProps {
+  queryParams: Record<string, string>;
+  filtersOpen: boolean;
+  setFiltersOpen: (open: boolean) => void;
+}
+
+export interface FiltersSidebarProps {
+  queryParams: Record<string, string>;
+  updateFilters: (filter: string, value: string) => void;
+  radius: number;
+  setRadius: (value: number) => void;
+  applyRadiusFilter: () => void;
+  filtersOpen: boolean;
+  clearAllFilters: () => void;
 }
