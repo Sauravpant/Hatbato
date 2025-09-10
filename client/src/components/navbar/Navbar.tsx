@@ -26,8 +26,9 @@ const Navbar: React.FC = () => {
   const [profileMenuOpen, setProfileMenuOpen] = useState<boolean>(false);
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.preventDefault();
+    navigate("/products");
     context?.setSearch(e.target.value);
-    console.log(e.target.value);
   };
 
   const handleLogout = async () => {
