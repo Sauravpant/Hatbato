@@ -13,6 +13,12 @@ enum Role {
   admin
 }
 
+enum ContactFor {
+  general_enquiry
+  report_an_issue
+  partnership
+}
+
 enum ReportFor {
   user
   product
@@ -176,4 +182,16 @@ model Report {
   @@index([reportedProductId])
   @@index([reportedUserId])
   @@index([reportedById])
+}
+
+model Contact {
+  id      String @id @default(uuid())
+  name    String
+  email   String
+  contact String
+  message String
+
+  @@index([name])
+  @@index([email])
+  @@index([contact])
 }
