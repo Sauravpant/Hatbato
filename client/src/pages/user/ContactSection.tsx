@@ -4,27 +4,46 @@ import { Label } from "@/components/ui/label";
 import type { ContactForm } from "@/types/admin/types";
 import { useState } from "react";
 import { Phone, Mail, Clock } from "lucide-react";
+import { submitForm } from "@/services/userServices";
+import toast from "react-hot-toast";
+import { Spinner } from "flowbite-react";
 
+const category: string[] = ["general_enquiry", "report_an_issue", "partnership"];
 const ContactSection = () => {
+  const [loading, setLoading] = useState<boolean>(false);
   const [formData, setFormData] = useState<ContactForm>({
     name: "",
     email: "",
     contact: "",
-    category: "general",
+    category: "general_enquiry",
     message: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    //Hnadle the backend logic
-    console.log("Form submitted:", formData);
+    try {
+      setLoading(true);
+      const response = await submitForm(formData);
+      setLoading(false);
+      toast.success(response?.message || "Form submitted successfully");
+    } catch (err: any) {
+      setLoading(false);
+      toast.error(err?.response?.data?.message || "Failed to submit form. Try again");
+    }
+    setFormData({
+      name: "",
+      email: "",
+      contact: "",
+      category: "general_enquiry",
+      message: "",
+    });
   };
 
   return (
-    <section className="py-5 bg-gradient-to-b from-blue-50 to-indigo-50">
+    <section className="py-2 bg-gradient-to-b from-blue-50 to-indigo-50 mb-10">
       <div className="container mx-auto px-4 max-w-5xl">
         <div className="text-center mb-12">
-          <h2 className="text-4xl font-bold text-gray-800 mb-3">Contact Us</h2>
+          <h2 className="text-4xl font-bold text-blue-800 mb-3">Contact Us</h2>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">We'd love to hear from you! Reach out directly or send us a message.</p>
         </div>
         <div className="grid md:grid-cols-2 gap-10">
@@ -70,6 +89,7 @@ const ContactSection = () => {
                 <Input
                   type="text"
                   id="name"
+                  placeholder="Eg. Saurav Pant"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
@@ -84,6 +104,7 @@ const ContactSection = () => {
                 <Input
                   type="text"
                   id="contact"
+                  placeholder="Eg. 123456789"
                   value={formData.contact}
                   onChange={(e) => setFormData({ ...formData, contact: e.target.value })}
                   className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
@@ -99,6 +120,7 @@ const ContactSection = () => {
               <Input
                 type="email"
                 id="email"
+                placeholder="Eg. saurav@gmail.com"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
@@ -116,9 +138,11 @@ const ContactSection = () => {
                 onChange={(e) => setFormData({ ...formData, category: e.target.value })}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
               >
-                <option value="general">General Inquiry</option>
-                <option value="report">Report an Issue</option>
-                <option value="partnership">Partnership</option>
+                {category.map((ctg) => (
+                  <option key={ctg} value={ctg}>
+                    {ctg}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -139,9 +163,9 @@ const ContactSection = () => {
 
             <Button
               type="submit"
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg"
+              className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition-all duration-300 shadow-md hover:shadow-lg cursor-pointer"
             >
-              Send Message
+              {loading ? <Spinner /> : "Send Message"}{" "}
             </Button>
           </form>
         </div>
