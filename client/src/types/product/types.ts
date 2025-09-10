@@ -9,3 +9,15 @@ export interface CreateProduct {
   latitude: number;
   longitude: number;
 }
+
+export interface Product {
+  id:string;
+  title: string;
+  description: string;
+  price: number;
+  address: string;
+  imageUrl: string;
+  deliveryAvailable: boolean;
+  status: string;
+  postedAt: string | Date;
+}
