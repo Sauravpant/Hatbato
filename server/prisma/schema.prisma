@@ -189,6 +189,7 @@ model Contact {
   name    String
   email   String
   contact String
+  category ContactFor
   message String
 
   @@index([name])
