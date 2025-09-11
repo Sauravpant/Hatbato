@@ -1,5 +1,6 @@
 import CategoryCard from "@/components/common/CategoryCard";
-import Spinner from "@/components/ui/Spinner";
+import { ErrorMessage } from "@/components/ui/ErrorMessage";
+import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { getCategory } from "@/services/categoryServices";
 import type { CategoryDetails } from "@/types/category/types";
 import { useQuery } from "@tanstack/react-query";
@@ -8,33 +9,15 @@ const CategoryPage = () => {
   const { isLoading, data, error, refetch } = useQuery<CategoryDetails[]>({
     queryKey: ["category"],
     queryFn: getCategory,
-    staleTime:Infinity, 
+    staleTime: Infinity,
   });
 
   if (error) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="text-center p-8 bg-white rounded-xl shadow-lg max-w-md mx-4 border border-gray-200">
-          <h2 className="text-xl font-semibold text-gray-800 mb-2">Failed to load categories</h2>
-          <p className="text-gray-600 mb-4">Please check your connection and try again</p>
-          <button className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors shadow-md" onClick={() => refetch()}>
-            Try Again
-          </button>
-        </div>
-      </div>
-    );
+    return <ErrorMessage title="Error fetching Categories..." refetch={refetch} />;
   }
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
-        <div className="text-center">
-          <Spinner />
-          <h2 className="text-xl font-semibold text-gray-700">Loading Categories</h2>
-          <p className="text-gray-500 mt-1">Discover amazing products...</p>
-        </div>
-      </div>
-    );
+    return <LoadingScreen title="Loading Categories" subtitle="Discover amazing products..." />;
   }
 
   return (
