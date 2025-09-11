@@ -7,16 +7,19 @@ import CategoryPage from "@/pages/user/CategoryPage";
 import { HeroSection } from "@/pages/user/home/HeroSection";
 import Products from "@/pages/user/Products";
 import SellProduct from "@/pages/user/SellProduct";
+import ProductDetails from "@/pages/user/ProductDetails";
 import { Route, Routes } from "react-router-dom";
+import ContactSection from "@/pages/user/ContactSection";
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<UserLayout />}>
         <Route index element={<HeroSection />} />
         <Route path="/products" element={<Products />} />
-        <Route path="/products/:category" element={<Products />}></Route>
+        <Route path="/product/:id" element={<ProductDetails />}></Route>
         <Route path="/category" element={<CategoryPage />} />
          <Route path="/sell" element={<SellProduct />} />
+         <Route path="/contact" element={<ContactSection/>}/>
       </Route>
       {/* Authentication Routes */}
       <Route path="/auth/login" element={<LoginPage />} />
