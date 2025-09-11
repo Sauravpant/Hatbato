@@ -18,7 +18,7 @@ export interface Product {
   address: string;
   imageUrl: string;
   deliveryAvailable: boolean;
-  status: string;
+  status: "new" | "like_new" | "used" | "refurbished" | "damaged" | "for_parts";
   postedAt: string | Date;
 }
 
@@ -34,7 +34,6 @@ export interface ProductsGridProps {
   error: any;
 }
 
-
 export interface ProductsHeaderProps {
   queryParams: Record<string, string>;
   filtersOpen: boolean;
@@ -49,4 +48,43 @@ export interface FiltersSidebarProps {
   applyRadiusFilter: () => void;
   filtersOpen: boolean;
   clearAllFilters: () => void;
+}
+
+export interface User {
+  name: string;
+  address: string;
+  contactNumber: string;
+  email: string;
+  isVerified: boolean;
+  imageUrl: string | null;
+  averageRating: number | null;
+}
+
+export interface Product {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  address: string;
+  latitude: number;
+  longitude: number;
+  imageUrl: string;
+  imagePublicId: string;
+  deliveryAvailable: boolean;
+  status: "new" | "like_new" | "used" | "refurbished" | "damaged" | "for_parts";
+  postedAt: string | Date;
+  isBought: boolean;
+  userId: string;
+  categoryId: string;
+  category: Category;
+  user: User;
+  totalProducts: number;
+}
+
+export interface Category {
+  name: string;
+}
+
+export interface ProductResponse {
+  data: Product;
 }
