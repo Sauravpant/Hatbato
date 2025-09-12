@@ -6,6 +6,7 @@ const initialState: AuthState = {
   user: null,
   isLoading: false,
   isAuthenticated: false,
+  checkingAuth:true,
   error: null,
 };
 
@@ -33,6 +34,7 @@ const authSlice = createSlice({
     setUser(state, action: PayloadAction<User>) {
       state.user = action.payload;
       state.isAuthenticated = true;
+      state.checkingAuth=false;
     },
   },
   extraReducers: (builder) => {
@@ -44,10 +46,12 @@ const authSlice = createSlice({
         state.user = action.payload;
         state.isAuthenticated = true;
         state.isLoading = false;
+        state.checkingAuth=false;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
         state.error = action.payload || "Login Failed";
+        state.checkingAuth=false;
       })
       .addCase(logoutUser.fulfilled, (state) => {
         state.user = null;
