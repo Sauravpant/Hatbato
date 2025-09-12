@@ -17,25 +17,30 @@ export interface User {
   updatedAt: Date;
 }
 
-export interface RegisterData{
-  name:string;
-  email:string;
-  password:string;
-  contactNumber:string;
-  address:string;
+export interface RegisterData {
+  name: string;
+  email: string;
+  password: string;
+  contactNumber: string;
+  address: string;
 }
 
 export interface AuthState {
   user: User | null;
   isLoading: boolean;
   isAuthenticated: boolean;
-  checkingAuth:boolean;
+  checkingAuth: boolean;
   error: string | null;
 }
 
 export interface ResetPassword {
-  email:string;
-  otp:string;
-  newPassword:string;
-  confirmNewPassword:string;
+  email: string;
+  otp: string;
+  newPassword: string;
+  confirmNewPassword: string;
+}
+
+export interface ChangePassword {
+  oldPassword: string;
+  newPassword: string;
 }

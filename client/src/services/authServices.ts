@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios";
-import type { LoginData, RegisterData, ResetPassword, User } from "@/types/auth/types";
+import type { ChangePassword, LoginData, RegisterData, ResetPassword, User } from "@/types/auth/types";
 
 export const login = async (data: LoginData): Promise<User> => {
   const response = await api.post("/auth/login", data);
@@ -23,4 +23,9 @@ export const forgetPassword = async (email: string): Promise<any> => {
 export const resetPassword = async (data: ResetPassword): Promise<any> => {
   const response = await api.patch("/user/reset-password", data);
   return response.data;
+};
+
+export const changePassword = async (data: ChangePassword): Promise<User> => {
+  const response = await api.patch("/auth/change-password", data);
+  return response.data.data;
 };
