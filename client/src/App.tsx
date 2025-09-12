@@ -2,15 +2,16 @@ import { useEffect } from "react";
 import { api } from "./lib/axios";
 import { setUser } from "./features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import type { AppDispatch } from "./store/store";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "./store/store";
 import { Toaster } from "react-hot-toast";
 import AppRoutes from "./routes/AppRoutes";
 import SearchContextProvider from "./store/searchContext";
+import Spinner from "./components/ui/Spinner";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
-
+  const checkingAuth = useSelector((state: RootState) => state.auth.checkingAuth);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -32,6 +33,9 @@ const App = () => {
     getUser();
   }, []);
 
+  if (checkingAuth) {
+    return <Spinner />;
+  }
   return (
     <SearchContextProvider>
       <AppRoutes />
