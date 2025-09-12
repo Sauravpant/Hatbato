@@ -8,6 +8,7 @@ import { Toaster } from "react-hot-toast";
 import AppRoutes from "./routes/AppRoutes";
 import SearchContextProvider from "./store/searchContext";
 import Spinner from "./components/ui/Spinner";
+import { setCheckingAuthFalse } from "./features/auth/authSlice";
 
 const App = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -26,6 +27,7 @@ const App = () => {
           const user = await api.get("/auth/refresh-token");
           dispatch(setUser(user.data.data));
         } catch (error) {
+          dispatch(setCheckingAuthFalse());
           navigate("/");
         }
       }
