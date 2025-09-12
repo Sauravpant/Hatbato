@@ -12,6 +12,6 @@ export const deactivateAccount = async () => {
 };
 
 export const deleteAccount = async () => {
-  const response = await api.patch("/user/delete-user");
+  const response = await api.delete("/user/delete-user");
   return response.data;
 };
