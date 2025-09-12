@@ -1,7 +1,9 @@
 import { changePassword } from "@/services/authServices";
+import { deactivateAccount, deleteAccount } from "@/services/userServices";
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
+import {useNavigate } from "react-router-dom";
 
 const AccountSettingsPage = () => {
   return (
@@ -33,6 +35,15 @@ const ChangePasswordForm = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    try {
+      const response = await changePassword({ oldPassword, newPassword });
+      toast.success("Password Changed successfully");
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Failed to Change the password");
+    } finally {
+      setOldPassword("");
+      setNewPassword("");
+    }
   };
 
   return (
@@ -87,13 +98,20 @@ const ChangePasswordForm = () => {
 
 const DeactivateAccountButton = () => {
   const [isConfirming, setIsConfirming] = useState<boolean>(false);
-
-  const handleDeactivate = () => {
+  const navigate = useNavigate();
+  const handleDeactivate = async (e: React.MouseEvent) => {
     if (!isConfirming) {
       setIsConfirming(true);
       return;
     }
-    console.log("Deactivating account...");
+    try {
+      const response = await deactivateAccount();
+      console.log(response);
+      toast.success(response?.message || "Account deactivated successfully");
+      navigate("/auth/login", { replace: true });
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Account Deativation failed");
+    }
   };
 
   return (
@@ -127,13 +145,20 @@ const DeactivateAccountButton = () => {
 };
 const DeleteAccountButton = () => {
   const [isConfirming, setIsConfirming] = useState<boolean>(false);
-
-  const handleDelete = () => {
+  const navigate = useNavigate();
+  const handleDelete = async (e: React.MouseEvent) => {
     if (!isConfirming) {
       setIsConfirming(true);
       return;
     }
-    console.log("Deleting account...");
+    try {
+      const response = await deleteAccount();
+      console.log(response);
+      toast.success(response?.message || "Account deactivated successfully");
+      navigate("/auth/login", { replace: true });
+    } catch (err: any) {
+      toast.error(err?.response?.data?.message || "Account deletion failed");
+    }
   };
 
   return (
