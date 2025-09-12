@@ -3,6 +3,9 @@ import type { Product } from "@/types/product/types";
 import { SeeMore } from "../ui/SeeMore";
 import { Star, MapPin, Phone, Mail, Shield, Calendar, Tag, ShoppingCart } from "lucide-react";
 import { DialogBox } from "../ui/DialogBox";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { reportProduct, reportUser } from "@/services/reportServices";
+import toast from "react-hot-toast";
 
 interface ProductDetailsCardProps {
   product: Product;
@@ -13,6 +16,29 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ product }) => {
     return name.charAt(0).toUpperCase();
   };
 
+  const queryClient = useQueryClient();
+
+  const reportUserMutation = useMutation({
+    mutationFn: (data: { reason: string; description: string }) => reportUser(product.user.id, data),
+    onSuccess: () => {
+      toast.success("User reported Successfully");
+      queryClient.invalidateQueries({ queryKey: ["get-reports"] });
+    },
+    onError: () => {
+      toast.error("Failed to report user");
+    },
+  });
+
+  const reportProductMutation = useMutation({
+    mutationFn: (data: { reason: string; description: string }) => reportProduct(product.id, data),
+    onSuccess: () => {
+      toast.success("Product reported Successfully");
+      queryClient.invalidateQueries({ queryKey: ["get-reports"] });
+    },
+    onError: () => {
+      toast.error("Failed to report product");
+    },
+  });
   return (
     <div className="w-full max-w-xl mx-auto p-6 bg-white rounded-3xl shadow-xl border border-gray-100 backdrop-blur-sm bg-opacity-95">
       <div className="w-full mb-6">
@@ -136,12 +162,24 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ product }) => {
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-        <div className="flex items-center justify-center">
+        <div className="flex items-center justify-center gap-2 cursor-pointer">
           <ShoppingCart />
-          <DialogBox buttonText="Buy Now" title="Buy This Product" description="Are you sure you want to buy this product" />
+          <button>Buy Now</button>
         </div>
-        <DialogBox buttonText="Report Seller" title="Report This Seller" description="Are you sure you want to report this seller" />
-        <DialogBox buttonText="Report Product" title="Report This Product" description="Are you sure you want to report this product" />
+        <DialogBox
+          buttonText="Report Seller"
+          title="Report This Seller"
+          description="Are you sure you want to report this seller"
+          onSubmit={(data) => reportUserMutation.mutate(data)}
+          isSubmitting={reportUserMutation.isPending}
+        />
+        <DialogBox
+          buttonText="Report Product"
+          title="Report This Product"
+          description="Are you sure you want to report this product"
+          onSubmit={(data) => reportProductMutation.mutate(data)}
+          isSubmitting={reportProductMutation.isPending}
+        />
       </div>
     </div>
   );
