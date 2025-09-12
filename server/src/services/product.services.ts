@@ -115,7 +115,7 @@ export const getById = async (productId: string): Promise<ProductById> => {
       userId: product.user.id,
     },
   });
-  const { id, ...userData } = product.user;
+  const {...userData } = product.user;
   return {
     ...product,
     categoryId: product.categoryId,
