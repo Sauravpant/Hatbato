@@ -6,12 +6,12 @@ import { CiUser } from "react-icons/ci";
 import { useNavigate } from "react-router-dom";
 
 const sidebarItems = [
-  { name: "Profile Settings", icon: CiUser, route: "/" },
+  { name: "Profile Settings", icon: CiUser, route: "." },
   { name: "Account Settings", icon: VscAccount, route: "account" },
 ];
 
 const SettingsSidebar = ({ children }: { children: ReactNode }) => {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState<boolean>(true);
   const navigate = useNavigate();
   const handleMenuClick = () => {
     setSidebarOpen(!sidebarOpen);
@@ -24,7 +24,10 @@ const SettingsSidebar = ({ children }: { children: ReactNode }) => {
           <div className="flex flex-col h-full p-2 z-10">
             <div className="flex items-center justify-between space-x-2 p-2">
               <h1 className=" text-lg lg:text-xl xl:text-2xl font-bold text-blue-500 hidden lg:block">Settings</h1>
-              <RxHamburgerMenu className="h-4 w-4 lg:h-5 lg:w-5 font-medium text-blue-500 hover:bg-gray-200 cursor-pointer" onClick={handleMenuClick} />
+              <RxHamburgerMenu
+                className="h-4 w-4 lg:h-5 lg:w-5 font-medium text-blue-500 hover:bg-gray-200 cursor-pointer"
+                onClick={handleMenuClick}
+              />
             </div>
             <div className="flex flex-col flex-1 space-y-4 p-2 mt-10 ml-2 overflow-y-auto">
               {sidebarItems.map((item) => (
