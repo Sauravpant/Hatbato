@@ -8,12 +8,12 @@ export interface ImageUpload {
 export interface UserData {
   id: string;
   name?: string;
-  contact?: string;
+  contactNumber?: string;
   address?: string;
 }
 
 export interface UpdateResponse {
-  result: Omit<User, "password" | "refreshToken">;
+  result: Omit<User, "password" | "refreshToken"|"imagePublicId">;
 }
 
 export interface ResetPassword {
