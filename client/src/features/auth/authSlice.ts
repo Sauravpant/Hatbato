@@ -39,6 +39,27 @@ const authSlice = createSlice({
     setCheckingAuthFalse(state) {
       state.checkingAuth = false;
     },
+    removeUser(state) {
+      state.user = null;
+      state.isAuthenticated = false;
+      state.isLoading = false;
+      state.checkingAuth = false;
+    },
+    setProfilePicture(state, action: PayloadAction<string>) {
+      if (state.user) {
+        state.user.imageUrl = action.payload;
+      }
+    },
+    removeProfilePicture(state) {
+      if (state.user) {
+        state.user.imageUrl = "";
+      }
+    },
+    setVerify(state) {
+      if (state.user) {
+        state.user.isVerified = true;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -68,5 +89,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { setUser, setCheckingAuthFalse } = authSlice.actions;
+export const { setUser, setCheckingAuthFalse, removeUser, setProfilePicture, removeProfilePicture ,setVerify} = authSlice.actions;
 export default authSlice.reducer;

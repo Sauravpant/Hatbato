@@ -44,3 +44,9 @@ export interface ChangePassword {
   oldPassword: string;
   newPassword: string;
 }
+
+export interface UpdateProfile {
+  name?: string;
+  contactNumber?: string;
+  address?: string;
+}
