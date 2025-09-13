@@ -29,3 +29,8 @@ export const changePassword = async (data: ChangePassword): Promise<User> => {
   const response = await api.patch("/auth/change-password", data);
   return response.data.data;
 };
+
+export const verifyAccount = async (otp: string) => {
+  const response = await api.patch("/auth/verify-account", { otp });
+  return response.data;
+};
