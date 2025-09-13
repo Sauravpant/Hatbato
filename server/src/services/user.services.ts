@@ -90,7 +90,7 @@ export const updateUser = async (data: UserData): Promise<UpdateResponse> => {
       ...userData,
     },
   });
-  const { password, refreshToken, ...result } = user;
+  const { password, refreshToken, imagePublicId,...result } = user;
   return { result };
 };
 
