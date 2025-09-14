@@ -1,8 +1,6 @@
 import { prisma } from "../db/config.ts";
-import { Order } from "../../generated/prisma/index.js";
 import { AppError } from "../utils/app-error.ts";
-import type { CreateOrder, UpdateOrder } from "../types/order.types.ts";
-
+import type { CreateOrder, UpdateOrder, Order } from "../types/order.types.ts";
 export const createOrder = async ({ productId, userId }: CreateOrder): Promise<void> => {
   const product = await prisma.product.findUnique({
     where: {
@@ -63,7 +61,8 @@ export const getOrdersByBuyer = async (buyerId: string): Promise<Order[]> => {
     where: {
       buyerId,
     },
-    include: {
+    select: {
+      id: true,
       product: {
         select: {
           title: true,
