@@ -1,7 +1,7 @@
 import type { Product } from "../../generated/prisma/index.js";
 import { safeUserSelect } from "../contants.ts";
 import { prisma } from "../db/config.ts";
-import { ProductById, ProductType, UpdateProduct } from "../types/product.types.ts";
+import { GetItems, ProductById, ProductType, UpdateProduct } from "../types/product.types.ts";
 import checkContent from "../utils/ai-client.ts";
 import { AppError } from "../utils/app-error.ts";
 import { deleteFromCloudinary, uploadToCloudinary } from "../utils/cloudinary.ts";
@@ -146,7 +146,7 @@ export const deleteItem = async (productId: string, userId: string): Promise<voi
   });
 };
 
-export const getMyItems = async (userId: string): Promise<Product[]> => {
+export const getMyItems = async (userId: string): Promise<GetItems[]> => {
   const products = await prisma.product.findMany({
     where: {
       userId,

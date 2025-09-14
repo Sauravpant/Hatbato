@@ -1,5 +1,5 @@
 import { Decimal } from "@prisma/client/runtime/library";
-
+import { Prisma } from "../../generated/prisma/index.js";
 export interface ProductType {
   userid: string;
   title: string;
@@ -35,7 +35,7 @@ export interface UpdateProduct {
   description?: string;
   price?: number;
   status?: "new" | "like_new" | "used" | "refurbished" | "damaged" | "for_parts";
-  category?:string;
+  category?: string;
 }
 interface UserInfo {
   name: string;
@@ -70,3 +70,13 @@ export interface ProductById {
   user: UserInfo;
   totalProducts: number;
 }
+
+export type GetItems = Prisma.ProductGetPayload<{
+  include: {
+    category: {
+      select: {
+        name: true;
+      };
+    };
+  };
+}>;
