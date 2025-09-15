@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { getAllProducts } from "@/services/product.services";
+import { getAllProducts } from "@/services/productServices";
 import ProductsHeader from "@/components/common/ProductsHeader";
 import FiltersSidebar from "@/components/sidebar/FiltersSidebar";
 import ProductsGrid from "@/components/common/ProductsGrid";

@@ -1,16 +1,10 @@
 import CategoryCard from "@/components/common/CategoryCard";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
-import { getCategory } from "@/services/categoryServices";
-import type { CategoryDetails } from "@/types/category/types";
-import { useQuery } from "@tanstack/react-query";
+import { useGetCategory } from "@/hooks/user/useCategory";
 
 const CategoryPage = () => {
-  const { isLoading, data, error, refetch } = useQuery<CategoryDetails[]>({
-    queryKey: ["category"],
-    queryFn: getCategory,
-    staleTime: Infinity,
-  });
+  const { isLoading, data, error, refetch } = useGetCategory();
 
   if (error) {
     return <ErrorMessage title="Error fetching Categories..." refetch={refetch} />;

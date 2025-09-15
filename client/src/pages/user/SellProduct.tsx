@@ -1,24 +1,18 @@
 import React, { useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import type { CategoryDetails } from "@/types/category/types";
-import { getCategory } from "@/services/categoryServices";
 import type { CreateProduct } from "@/types/product/types";
 import toast from "react-hot-toast";
-import { postProduct } from "@/services/product.services";
+import { postProduct } from "@/services/productServices";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Spinner } from "flowbite-react";
 import { getCurrentLocation } from "@/lib/geoLocation";
+import { useGetCategory } from "@/hooks/user/useCategory";
 
 const productStatus: string[] = ["new", "like_new", "used", "refurbished", "damaged", "for_parts"];
 
 const SellProduct = () => {
-  const { data, error } = useQuery<CategoryDetails[]>({
-    queryKey: ["productsCategory"],
-    queryFn: getCategory,
-    staleTime: Infinity,
-  });
+  const { data, error } = useGetCategory();
 
   const [file, setFile] = useState<File | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -50,7 +44,6 @@ const SellProduct = () => {
       setImagePreview(null);
     }
   };
-
 
   const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -87,10 +80,9 @@ const SellProduct = () => {
         latitude: 0,
         longitude: 0,
       });
-      
+
       setFile(null);
       setImagePreview(null);
-
     } catch (err: any) {
       setLoading(false);
       toast.error(err.response?.data?.message || "Error submitting the form");
