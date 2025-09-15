@@ -10,3 +10,10 @@ export interface Notification {
 export interface NotificationProps {
   isAuthenticated: boolean;
 }
+
+export interface ApiResponse<T> {
+  success: boolean;
+  statusCode: string;
+  message: string;
+  data: T;
+}

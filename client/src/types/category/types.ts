@@ -6,5 +6,11 @@ export interface CategoryDetails {
   slug:string;
   updatedAt:Date;
   createdAt:Date;
+} 
 
+export interface ApiResponse<T> {
+  success: boolean;
+  statusCode: string;
+  message: string;
+  data: T;
 }
