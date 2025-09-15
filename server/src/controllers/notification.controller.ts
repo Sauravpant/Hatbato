@@ -17,11 +17,11 @@ export const markNotificationAsRead = asyncHandler(async (req: AuthenticatedRequ
   const { id } = req.params;
   const userId = req.user.id;
   await markAsRead(id, userId);
-  return res.status(200).json(new ApiResponse(200, {}, "Notification marked as read"));
+  return res.status(200).json(new ApiResponse(200, null, "Notification marked as read"));
 });
 
 export const markAllNotificationsAsRead = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
   const userId = req.user.id;
   await markAllAsRead(userId);
-  return res.status(200).json(new ApiResponse(200, {}, "All notifications marked as read"));
+  return res.status(200).json(new ApiResponse(200, null, "All notifications marked as read"));
 });

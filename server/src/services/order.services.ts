@@ -63,6 +63,8 @@ export const getOrdersByBuyer = async (buyerId: string): Promise<Order[]> => {
     },
     select: {
       id: true,
+      createdAt: true,
+      status: true,
       product: {
         select: {
           title: true,
@@ -83,7 +85,10 @@ export const getOrdersBySeller = async (sellerId: string): Promise<Order[]> => {
     where: {
       sellerId,
     },
-    include: {
+    select: {
+      id: true,
+      createdAt: true,
+      status: true,
       product: {
         select: {
           title: true,

@@ -13,14 +13,14 @@ export const reportUser = asyncHandler(async (req: AuthenticatedRequest, res: Re
   const { userId } = req.params;
   const validatedData = await reportSchema.parseAsync(req.body);
   await handleUserReport(validatedData, req.user.id, userId);
-  return res.status(200).json(new ApiResponse(200, {}, "User reported successfully"));
+  return res.status(200).json(new ApiResponse(200, null, "User reported successfully"));
 });
 
 export const reportProduct = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
   const { productId } = req.params;
   const validatedData = await reportSchema.parseAsync(req.body);
   await handleProductReport(validatedData, req.user.id, productId);
-  return res.status(200).json(new ApiResponse(200, {}, "Product reported successfully"));
+  return res.status(200).json(new ApiResponse(200, null, "Product reported successfully"));
 });
 
 export const getAllReports = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
@@ -31,5 +31,5 @@ export const getAllReports = asyncHandler(async (req: AuthenticatedRequest, res:
 export const deleteReport = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
   const { reportId } = req.params;
   await handleDeleteReport(reportId, req.user.id);
-  return res.status(200).json(new ApiResponse(200, {}, "Report deleted successfully"));
+  return res.status(200).json(new ApiResponse(200, null, "Report deleted successfully"));
 });

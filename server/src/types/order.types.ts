@@ -13,6 +13,8 @@ export interface UpdateOrder {
 export type Order = Prisma.OrderGetPayload<{
   select: {
     id: true;
+    createdAt: true;
+    status: true;
     product: {
       select: {
         title: true;
