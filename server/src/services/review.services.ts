@@ -1,10 +1,9 @@
-import { Review } from "../../generated/prisma/index.js";
 import { prisma } from "../db/config.ts";
 import { AppError } from "../utils/app-error.ts";
 import type { CreateReview, UpdateReview } from "../validators/review.validator.ts";
 import checkContent from "../utils/ai-client.ts";
+import { BuyerReview, SellerAverage, SellerReview } from "../types/review.types,.ts";
 export const handleCreateReview = async (reviewData: CreateReview, sellerId: string, userId: string): Promise<void> => {
-  
   //Check the review for any inappropriate content
   const isNotSafe = await checkContent(`Review:${reviewData.comment}`);
   if (isNotSafe) {
@@ -91,7 +90,7 @@ export const handleDeleteReview = async (reviewId: string, userId: string): Prom
   });
 };
 
-export const userReviewed = async (userId: string): Promise<Review[]> => {
+export const userReviewed = async (userId: string): Promise<BuyerReview[]> => {
   const reviews = await prisma.review.findMany({
     where: {
       reviewerId: userId,
@@ -112,7 +111,7 @@ export const userReviewed = async (userId: string): Promise<Review[]> => {
   return reviews;
 };
 
-export const userReviews = async (userId: string): Promise<Review[]> => {
+export const userReviews = async (userId: string): Promise<SellerReview[]> => {
   const reviews = await prisma.review.findMany({
     where: {
       sellerId: userId,
@@ -132,7 +131,7 @@ export const userReviews = async (userId: string): Promise<Review[]> => {
   return reviews;
 };
 
-export const getAverage = async (sellerId: string): Promise<{ averageRating: number; totalReviews: number }> => {
+export const getAverage = async (sellerId: string): Promise<SellerAverage> => {
   const result = await prisma.review.aggregate({
     where: { sellerId },
     _avg: {
