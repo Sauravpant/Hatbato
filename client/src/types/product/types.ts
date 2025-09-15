@@ -9,19 +9,6 @@ export interface CreateProduct {
   latitude: number;
   longitude: number;
 }
-
-export interface Product {
-  id: string;
-  title: string;
-  description: string;
-  price: number;
-  address: string;
-  imageUrl: string;
-  deliveryAvailable: boolean;
-  status: "new" | "like_new" | "used" | "refurbished" | "damaged" | "for_parts";
-  postedAt: string | Date;
-}
-
 export interface PaginationWrapperProps {
   totalPages: number;
   currentPage: number;
@@ -51,7 +38,7 @@ export interface FiltersSidebarProps {
 }
 
 export interface User {
-  id:string;
+  id: string;
   name: string;
   address: string;
   contactNumber: string;
@@ -88,4 +75,59 @@ export interface Category {
 
 export interface ProductResponse {
   data: Product;
+}
+
+export interface UpdatedProduct {
+  id: string;
+  title: string;
+  description: string;
+  price: number;
+  address: string;
+  latitude: number;
+  longitude: number;
+  imageUrl: string;
+  imagePublicId: string;
+  deliveryAvailable: boolean;
+  status: "new" | "like_new" | "used" | "refurbished" | "damaged" | "for_parts";
+  postedAt: Date;
+  isBought: boolean;
+  userId: string;
+  categoryId: string;
+}
+
+export interface UpdateProduct {
+  title?: string;
+  description?: string;
+  price?: number;
+  address?: string;
+  category?: string;
+  status?: "new" | "like_new" | "used" | "refurbished" | "damaged" | "for_parts";
+}
+
+export interface GetItems {
+  category: {
+    name: string;
+  };
+  id: string;
+  imageUrl: string;
+  imagePublicId: string;
+  address: string;
+  title: string;
+  description: string;
+  price: number;
+  status: "new" | "like_new" | "used" | "refurbished" | "damaged" | "for_parts";
+  deliveryAvailable: boolean;
+  latitude: number;
+  longitude: number;
+  postedAt: Date;
+  isBought: boolean;
+  userId: string;
+  categoryId: string;
+}
+
+export interface ApiResponse<T> {
+  success: boolean;
+  message: string;
+  successCode: number;
+  data: T;
 }
