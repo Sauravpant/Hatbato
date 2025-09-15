@@ -18,14 +18,14 @@ export const createProduct = asyncHandler(async (req: AuthenticatedRequest, res:
   if (!imagePath) {
     throw new AppError(400, "Product image is required.");
   }
-   // Create product in the database
+  // Create product in the database
   await create({
     ...validatedData,
     userid: req.user.id,
     productImage: imagePath,
   });
 
-  return res.status(201).json(new ApiResponse(201, {}, "Product created successfully."));
+  return res.status(201).json(new ApiResponse(201, null, "Product created successfully."));
 });
 
 // Controller to handle fetching a product by id
@@ -41,7 +41,7 @@ export const deleteProduct = asyncHandler(async (req: AuthenticatedRequest, res:
   const userId = req.user.id;
   await deleteItem(productId, userId);
   // 204 No Content for successful deletion
-  return res.status(204).json();
+  return res.status(200).json(new ApiResponse(204, null, "Product deleted successfully"));
 });
 
 // Controller to get all products for the current user

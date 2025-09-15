@@ -62,6 +62,7 @@ export interface ProductById {
   imageUrl: string | null;
   imagePublicId: string | null;
   deliveryAvailable: boolean;
+  isBought: boolean;
   status: string;
   postedAt: Date;
   userId: string;
