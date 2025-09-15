@@ -1,44 +1,17 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Bell, X, CheckCircle } from "lucide-react";
-import { getNotifications, markNotificationAsRead, markAllAsRead } from "@/services/notificationServices";
-import type { Notification, NotificationProps } from "@/types/notifications/types";
+import type { NotificationProps, Notification } from "@/types/notifications/types";
+import { useGetNotifications, useMarkNotificationAsRead, useMarkAllAsRead } from "@/hooks/user/useNotification";
 
 const Notifications: React.FC<NotificationProps> = ({ isAuthenticated }) => {
-  const [notifications, setNotifications] = useState<Notification[]>([]);
   const [open, setOpen] = useState<boolean>(false);
   const notificationRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const fetchNotifications = async (): Promise<void> => {
-      if (isAuthenticated) {
-        try {
-          const data = await getNotifications();
-          setNotifications(data);
-        } catch (error) {
-          console.error(error);
-        }
-      }
-    };
-    fetchNotifications();
-  }, [isAuthenticated]);
+  const { data: notifications = [] } = useGetNotifications();
 
-  const handleNotificationAsRead = async (id: string): Promise<void> => {
-    try {
-      await markNotificationAsRead(id);
-      setNotifications((prev) => prev.map((n) => (n.id === id ? { ...n, read: true } : n)));
-    } catch (err: any) {
-      console.error("Failed to mark notification as read");
-    }
-  };
+  const markAsReadMutation = useMarkNotificationAsRead();
+  const markAllAsReadMutation = useMarkAllAsRead();
 
-  const handleMarkAllRead = async (): Promise<void> => {
-    try {
-      await markAllAsRead();
-      setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
-    } catch (err: any) {
-      console.error("Failed to mark all notification as read");
-    }
-  };
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (notificationRef.current && !notificationRef.current.contains(event.target as Node)) {
@@ -47,10 +20,10 @@ const Notifications: React.FC<NotificationProps> = ({ isAuthenticated }) => {
     };
 
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
+
+  const unreadCount = notifications.filter((n: Notification) => !n.read).length;
 
   return (
     <div className="relative" ref={notificationRef}>
@@ -61,9 +34,9 @@ const Notifications: React.FC<NotificationProps> = ({ isAuthenticated }) => {
         aria-expanded={open}
       >
         <Bell className="h-5 w-5 text-white dark:text-gray-300" />
-        {notifications.some((n) => !n.read) && (
+        {unreadCount > 0 && (
           <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs h-5 min-w-5 flex items-center justify-center rounded-full">
-            {notifications.filter((n) => !n.read).length}
+            {unreadCount}
           </span>
         )}
       </button>
@@ -80,9 +53,9 @@ const Notifications: React.FC<NotificationProps> = ({ isAuthenticated }) => {
             <span className="font-semibold text-base">Notifications</span>
             <div className="flex items-center gap-2">
               <button
-                onClick={handleMarkAllRead}
+                onClick={() => markAllAsReadMutation.mutate(null)}
                 className="text-xs text-blue-600 dark:text-blue-400 hover:underline flex items-center gap-1"
-                disabled={notifications.filter((n) => !n.read).length === 0}
+                disabled={unreadCount === 0}
               >
                 <CheckCircle size={14} />
                 Mark all read
@@ -107,7 +80,7 @@ const Notifications: React.FC<NotificationProps> = ({ isAuthenticated }) => {
                   className={`p-3 border-b border-gray-100 dark:border-gray-700 last:border-b-0 cursor-pointer transition-colors duration-150 hover:bg-gray-50 dark:hover:bg-gray-750 ${
                     notification.read ? "text-gray-500 dark:text-gray-400" : "bg-blue-50 dark:bg-blue-900/20 font-medium"
                   }`}
-                  onClick={() => handleNotificationAsRead(notification.id)}
+                  onClick={() => markAsReadMutation.mutate({ id: notification.id })}
                 >
                   <p className="text-sm">{notification.message}</p>
                 </div>
