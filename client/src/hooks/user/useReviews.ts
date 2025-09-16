@@ -10,11 +10,12 @@ import {
 } from "@/services/reviewServices";
 import type { BuyerReview, SellerReview, SellerAverage, RatingStats, ApiResponse } from "@/types/reviews/types";
 import toast from "react-hot-toast";
-
+import { useAuthUser } from "./useAuthUser";
 //Get given reviews
 export const useMyGivenReviews = () => {
+  const user = useAuthUser();
   return useQuery<ApiResponse<BuyerReview[]>, unknown>({
-    queryKey: ["myGivenReviews"],
+    queryKey: ["myGivenReviews", user?.id],
     queryFn: getMyGivenReviews,
     staleTime: Infinity,
   });
@@ -22,8 +23,9 @@ export const useMyGivenReviews = () => {
 
 //Get received reviews
 export const useMyReceivedReviews = () => {
+  const user = useAuthUser();
   return useQuery<ApiResponse<SellerReview[]>, unknown>({
-    queryKey: ["myReceivedReviews"],
+    queryKey: ["myReceivedReviews", user?.id],
     queryFn: getMyReceivedReviews,
     staleTime: Infinity,
   });
@@ -50,11 +52,12 @@ export const useMyStats = () => {
 // Post a review
 export const useCreateReview = () => {
   const queryClient = useQueryClient();
+  const user = useAuthUser();
   return useMutation<ApiResponse<null>, unknown, { sellerId: string }>({
     mutationFn: ({ sellerId }: { sellerId: string }) => createReview(sellerId),
     onSuccess: (data) => {
       toast.success(data.message || "Review created successfully");
-      queryClient.invalidateQueries({ queryKey: ["myGivenReviews", "myReceivedReviews", "sellerAverage", "myStats"] });
+      queryClient.invalidateQueries({ queryKey: ["myGivenReviews", "myReceivedReviews", "sellerAverage", "myStats", user?.id] });
     },
     onError: (err: any) => {
       toast.error(err?.response?.data?.message || "Failed to create review");
@@ -65,11 +68,12 @@ export const useCreateReview = () => {
 //Update a review
 export const useUpdateReview = () => {
   const queryClient = useQueryClient();
+  const user = useAuthUser();
   return useMutation<ApiResponse<null>, unknown, { reviewId: string }>({
     mutationFn: ({ reviewId }: { reviewId: string }) => updateReview(reviewId),
     onSuccess: (data) => {
       toast.success(data.message || "Review updated successfully");
-      queryClient.invalidateQueries({ queryKey: ["myGivenReviews", "myReceivedReviews", "sellerAverage", "myStats"] });
+      queryClient.invalidateQueries({ queryKey: ["myGivenReviews", "myReceivedReviews", "sellerAverage", "myStats", user?.id] });
     },
     onError: (err: any) => {
       toast.error(err?.response?.data?.message || "Failed to update review");
@@ -80,11 +84,12 @@ export const useUpdateReview = () => {
 //Delete a review
 export const useDeleteReview = () => {
   const queryClient = useQueryClient();
+  const user = useAuthUser();
   return useMutation<ApiResponse<null>, unknown, { reviewId: string }>({
     mutationFn: ({ reviewId }: { reviewId: string }) => deleteReview(reviewId),
     onSuccess: (data) => {
       toast.success(data.message || "Review deleted successfully");
-      queryClient.invalidateQueries({ queryKey: ["myGivenReviews", "myReceivedReviews", "sellerAverage", "myStats"] });
+      queryClient.invalidateQueries({ queryKey: ["myGivenReviews", "myReceivedReviews", "sellerAverage", "myStats", user?.id] });
     },
     onError: (err: any) => {
       toast.error(err?.response?.data?.message || "Failed to delete review");
