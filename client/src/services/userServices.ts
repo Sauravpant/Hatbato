@@ -13,6 +13,7 @@ export interface UserStats {
   productsBought: number;
 }
 
+
 export const submitForm = async (data: ContactForm) => {
   const response = await api.post("/user/contact", data);
   return response.data;

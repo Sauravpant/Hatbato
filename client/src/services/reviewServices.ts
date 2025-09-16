@@ -1,18 +1,18 @@
 import { api } from "@/lib/axios";
-import type { SellerAverage, ApiResponse, BuyerReview, SellerReview, RatingStats } from "@/types/reviews/types";
+import type { SellerAverage, ApiResponse, BuyerReview, SellerReview, RatingStats, CreateReview, UpdateReview } from "@/types/reviews/types";
 
-export const createReview = async (sellerId: string): Promise<ApiResponse<null>> => {
-  const response = await api.post<ApiResponse<null>>(`/review/${sellerId}`);
+export const createReview = async (sellerId: string,data:CreateReview): Promise<ApiResponse<null>> => {
+  const response = await api.post<ApiResponse<null>>(`/review/${sellerId}`,data);
   return response.data;
 };
 
-export const updateReview = async (reviewId: string): Promise<ApiResponse<null>> => {
-  const response = await api.patch<ApiResponse<null>>(`/review/${reviewId}`);
+export const updateReview = async (reviewId: string,data:UpdateReview): Promise<ApiResponse<null>> => {
+  const response = await api.patch<ApiResponse<null>>(`/review/update/${reviewId}`,data);
   return response.data;
 };
 
 export const deleteReview = async (reviewId: string): Promise<ApiResponse<null>> => {
-  const response = await api.delete<ApiResponse<null>>(`/review/${reviewId}`);
+  const response = await api.delete<ApiResponse<null>>(`/review/delete/${reviewId}`);
   return response.data;
 };
 
@@ -26,7 +26,7 @@ export const getMyReceivedReviews = async (): Promise<ApiResponse<SellerReview[]
   return response.data;
 };
 export const getAverageData = async (): Promise<ApiResponse<SellerAverage>> => {
-  const response = await api.get<ApiResponse<SellerAverage>>(`/review/my/avergae`);
+  const response = await api.get<ApiResponse<SellerAverage>>(`/review/my/average`);
   return response.data;
 };
 
