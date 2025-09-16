@@ -4,6 +4,8 @@ import { SeeMore } from "../../ui/SeeMore";
 import { Star, MapPin, Phone, Mail, Shield, Calendar, Tag, ShoppingCart } from "lucide-react";
 import { DialogBox } from "../../ui/DialogBox";
 import { useReportProduct, useReportUser } from "@/hooks/user/useReport";
+import { usePlaceOrder } from "@/hooks/user/useOrder";
+import { AlertBox } from "@/components/common/AlertBox";
 
 interface ProductDetailsCardProps {
   product: Product;
@@ -13,8 +15,12 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ product }) => {
   const getInitials = (name: string) => {
     return name.charAt(0).toUpperCase();
   };
-
+  const { mutate } = usePlaceOrder();
   const reportUserMutation = useReportUser();
+
+  const handleBuy = (id: string) => {
+    mutate({ productId: id });
+  };
 
   const reportProductMutation = useReportProduct();
   return (
@@ -142,7 +148,15 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ product }) => {
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="flex items-center justify-center gap-2 cursor-pointer">
           <ShoppingCart />
-          <button>Buy Now</button>
+          <AlertBox
+            id={product.id}
+            button="Buy Now"
+            cancelButton="Cancel"
+            confirmButton="Confirm"
+            question="Are you sure you want to buy this product ?"
+            description="This will send a purchase request to the sellerr"
+            onSubmit={handleBuy}
+          />
         </div>
         <DialogBox
           buttonText="Report Seller"
