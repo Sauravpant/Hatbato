@@ -17,10 +17,24 @@ export type Order = Prisma.OrderGetPayload<{
     status: true;
     product: {
       select: {
+        imageUrl: true;
         title: true;
         price: true;
-        isBought: true;
         deliveryAvailable: true;
+      };
+    };
+    buyer: {
+      select: {
+        name: true;
+        contactNumber: true;
+        address: true;
+      };
+    };
+    seller: {
+      select: {
+        name: true;
+        contactNumber: true;
+        address: true;
       };
     };
   };
