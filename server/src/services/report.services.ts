@@ -92,11 +92,6 @@ export const handleGetReports = async (userId: string): Promise<Report[]> => {
       reportedById: userId,
     },
   });
-
-  if (reports.length === 0) {
-    throw new AppError(404, "No reports found");
-  }
-
   return reports;
 };
 

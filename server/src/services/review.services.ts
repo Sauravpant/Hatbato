@@ -104,10 +104,6 @@ export const userReviewed = async (userId: string): Promise<BuyerReview[]> => {
     },
   });
 
-  if (reviews.length === 0) {
-    throw new AppError(404, "No reviews found by this user");
-  }
-
   return reviews;
 };
 
@@ -124,10 +120,6 @@ export const userReviews = async (userId: string): Promise<SellerReview[]> => {
       },
     },
   });
-
-  if (reviews.length === 0) {
-    throw new AppError(404, "No reviews found for this user");
-  }
   return reviews;
 };
 
