@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios";
-import type { GetItems, Product, UpdatedProduct, ApiResponse } from "@/types/product/types";
+import type { GetItems, Product, UpdatedProduct, ApiResponse, UpdateProduct } from "@/types/product/types";
 
 export const postProduct = async (data: FormData): Promise<ApiResponse<null>> => {
   const response = await api.post<ApiResponse<null>>("/user/product/create", data);
@@ -16,24 +16,24 @@ export const getProductById = async (id: string): Promise<Product> => {
   return response.data.data;
 };
 
-export const updateProduct = async (productId: string, file: File, data: UpdatedProduct): Promise<ApiResponse<UpdatedProduct>> => {
+export const updateProduct = async (productId: string, file: File | null, data: UpdateProduct): Promise<ApiResponse<UpdatedProduct>> => {
   const formData = new FormData();
-  formData.append("imagePath", file);
+  if (file) formData.append("imagePath", file);
   Object.entries(data).forEach(([key, value]) => {
     if (value != undefined && value != null) {
       formData.append(key, value);
     }
   });
-  const response = await api.patch<ApiResponse<UpdatedProduct>>(`/product/update/${productId}`, formData);
+  const response = await api.patch<ApiResponse<UpdatedProduct>>(`/user/product/update/${productId}`, formData);
   return response.data;
 };
 
 export const deleteProduct = async (productId: string): Promise<ApiResponse<null>> => {
-  const response = await api.patch<ApiResponse<null>>(`/product/delete-product/${productId}`);
+  const response = await api.delete<ApiResponse<null>>(`/user/product/delete-product/${productId}`);
   return response.data;
 };
 
 export const getMyProducts = async (): Promise<ApiResponse<GetItems[]>> => {
-  const response = await api.get<ApiResponse<GetItems[]>>("/products/my-products");
+  const response = await api.get<ApiResponse<GetItems[]>>("/user/product/my-products");
   return response.data;
 };

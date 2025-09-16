@@ -1,6 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getAllProducts, getProductById, updateProduct, deleteProduct, getMyProducts } from "@/services/productServices";
-import type { ApiResponse, GetItems, Product, UpdatedProduct } from "@/types/product/types";
+import type { ApiResponse, GetItems, Product, UpdatedProduct, UpdateProduct } from "@/types/product/types";
 import toast from "react-hot-toast";
 
 // Fetch all products
@@ -31,8 +31,8 @@ export const useMyProducts = () => {
 // Update product
 export const useUpdateProduct = () => {
   const queryClient = useQueryClient();
-  return useMutation<ApiResponse<UpdatedProduct>, unknown, { productId: string; file: File; data: UpdatedProduct }>({
-    mutationFn: ({ productId, file, data }: { productId: string; file: File; data: UpdatedProduct }) => updateProduct(productId, file, data),
+  return useMutation<ApiResponse<UpdatedProduct>, unknown, { productId: string; file: File | null; data: UpdateProduct }>({
+    mutationFn: ({ productId, file, data }: { productId: string; file: File | null; data: UpdateProduct }) => updateProduct(productId, file, data),
     onSuccess: (data) => {
       toast.success(data.message || "Product updated successfully");
       queryClient.invalidateQueries({ queryKey: ["all-products"] });
