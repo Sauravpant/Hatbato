@@ -48,11 +48,11 @@ const UserSidebar = ({ children }: { children: ReactNode }) => {
           }}
           className="flex justify-center p-3 m-1 rounded-lg bg-blue-300 hover:bg-blue-200 text-gray-600 transition-colors cursor-pointer"
         >
-          <FaArrowLeft className="h-5 w-5 md:h-6 md:w-6 bg-blue-300 text-black" />
-          {sidebarOpen && <p className="font-">Back to Home</p>}
+          <FaArrowLeft className="h-5 w-5 md:h-6 md:w-6 text-black" />
+          {sidebarOpen && <p className="font-semibold hidden lg:flex">Back to Home</p>}
         </div>
         <div className="flex items-center p-4 border-b border-gray-100">
-          {sidebarOpen && <h1 className="text-xl lg:text-2xl font-bold text-blue-600 flex-1">Dashboard</h1>}
+          {sidebarOpen && <h1 className="text-xl hidden lg:flex lg:text-2xl font-bold text-blue-600 flex-1">Dashboard</h1>}
           <button onClick={handleMenuClick} className="p-2 rounded-lg hover:bg-gray-100 text-gray-600 transition-colors">
             <RxHamburgerMenu className="h-5 w-5" />
           </button>
