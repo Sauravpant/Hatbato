@@ -13,6 +13,7 @@ import {
   deactivate,
   submitContact,
   getDetails,
+  getStats,
 } from "../services/user.services.ts";
 import { User } from "../../generated/prisma/index.js";
 import { emailSchema, resetPasswordSchema, submitFormSchema, updateUserSchema } from "../validators/user.validator.ts";
@@ -105,4 +106,10 @@ export const getUserById = asyncHandler(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await getDetails(id);
   return res.status(200).json(new ApiResponse(200, result, "Seller details fetched successfully"));
+});
+
+export const getUserStats = asyncHandler(async (req: AuthenticatedRequest, res: Response) => {
+  const userId = req.user.id;
+  const result = await getStats(userId);
+  return res.status(200).json(new ApiResponse(200, result, "User stats fetched successfully"));
 });

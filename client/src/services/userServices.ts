@@ -1,6 +1,17 @@
 import { api } from "@/lib/axios";
 import type { ContactForm } from "@/types/admin/types";
-import type { UpdateProfile, User } from "@/types/auth/types";
+import type { UpdateProfile, User, UserDetails } from "@/types/auth/types";
+import type { ApiResponse } from "@/types/notifications/types";
+
+export interface UserStats {
+  totalProducts: number;
+  totalReportsMade: number;
+  totalReviewsReceived: number;
+  totalReviewsGiven: number;
+  totalOrdersMade: number;
+  totalOrdersReceived: number;
+  productsBought: number;
+}
 
 export const submitForm = async (data: ContactForm) => {
   const response = await api.post("/user/contact", data);
@@ -31,5 +42,15 @@ export const updateProfilePicture = async (file: File): Promise<string> => {
 
 export const deleteProfilePicture = async () => {
   const response = await api.delete("/user/delete-picture");
+  return response.data;
+};
+
+export const getUserById = async (id: string): Promise<ApiResponse<UserDetails>> => {
+  const response = await api.get<ApiResponse<UserDetails>>(`/user/seller/${id}`);
+  return response.data;
+};
+
+export const getUserStats = async (): Promise<ApiResponse<UserStats>> => {
+  const response = await api.get<ApiResponse<UserStats>>("/user/get/stats");
   return response.data;
 };
