@@ -6,6 +6,7 @@ import { DialogBox } from "../../ui/DialogBox";
 import { useReportProduct, useReportUser } from "@/hooks/user/useReport";
 import { usePlaceOrder } from "@/hooks/user/useOrder";
 import { AlertBox } from "@/components/common/AlertBox";
+import { useNavigate } from "react-router-dom";
 
 interface ProductDetailsCardProps {
   product: Product;
@@ -15,6 +16,7 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ product }) => {
   const getInitials = (name: string) => {
     return name.charAt(0).toUpperCase();
   };
+  const navigate = useNavigate();
   const { mutate } = usePlaceOrder();
   const reportUserMutation = useReportUser();
 
@@ -106,9 +108,12 @@ const ProductDetailsCard: React.FC<ProductDetailsCardProps> = ({ product }) => {
           )}
 
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center justify-between gap-3">
               <p className="text-base font-bold text-gray-900 truncate">{product.user.name}</p>
               {product.user.isVerified && <Shield className="h-5 w-5 text-blue-500 flex-shrink-0" />}
+              <button className="font-normal bg-blue-300 p-2 rounded-lg hover:bg-blue-100 cursor-pointer" onClick={() => navigate(`/seller/${product.user.id}`)}>
+                View details
+              </button>
             </div>
 
             {product.user.averageRating !== null ? (

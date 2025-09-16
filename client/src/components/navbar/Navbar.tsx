@@ -8,6 +8,7 @@ import { Button } from "../ui/button";
 import Notifications from "../common/Notifications";
 import { SearchContext } from "@/store/searchContext";
 import { MdDashboard } from "react-icons/md";
+import { useQueryClient } from "@tanstack/react-query";
 
 const navbarItems = [
   { name: "Home", link: "/" },
@@ -19,6 +20,7 @@ const navbarItems = [
 
 const Navbar: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
+  const queryClient = useQueryClient();
   const context = useContext(SearchContext);
   const { user, isAuthenticated } = useSelector((state: RootState) => state.auth);
   const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -33,6 +35,7 @@ const Navbar: React.FC = () => {
 
   const handleLogout = async () => {
     await dispatch(logoutUser());
+    queryClient.clear();
   };
 
   const navigate = useNavigate();
