@@ -5,6 +5,7 @@ import {
   deleteProfilePicture,
   deleteUser,
   getUser,
+  getUserById,
   resetPassword,
   sendOtp,
   submitForm,
@@ -15,6 +16,7 @@ import { upload } from "../middlewares/multer.middleware.ts";
 
 const router = Router();
 router.get("/me", verifyJWT, getUser);
+router.get("/:id", verifyJWT, getUserById);
 router.patch("/upload-picture", verifyJWT, upload.single("profilePicture"), uploadProfilePicture);
 router.delete("/delete-picture", verifyJWT, deleteProfilePicture);
 router.delete("/delete-user", verifyJWT, deleteUser);

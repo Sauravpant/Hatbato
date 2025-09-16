@@ -13,7 +13,7 @@ export interface UserData {
 }
 
 export interface UpdateResponse {
-  result: Omit<User, "password" | "refreshToken"|"imagePublicId">;
+  result: Omit<User, "password" | "refreshToken" | "imagePublicId">;
 }
 
 export interface ResetPassword {
@@ -29,4 +29,25 @@ export interface ContactForm {
   contact: string;
   category: "general_enquiry" | "report_an_issue" | "partnership";
   message: string;
+}
+
+export interface SellerDetails {
+  name: string;
+  contactNumber: string;
+  email: string;
+  address: string;
+  isVerified: boolean;
+  totalProducts: number;
+  averageRating: number;
+  reviews: {
+    id: string;
+    rating: number;
+    comment?: string | null;
+    createdAt: Date;
+    reviewer: {
+      id: string;
+      name: string;
+      imageUrl?: string | null;
+    };
+  }[];
 }

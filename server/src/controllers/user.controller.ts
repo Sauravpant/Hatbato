@@ -12,6 +12,7 @@ import {
   reset,
   deactivate,
   submitContact,
+  getDetails,
 } from "../services/user.services.ts";
 import { User } from "../../generated/prisma/index.js";
 import { emailSchema, resetPasswordSchema, submitFormSchema, updateUserSchema } from "../validators/user.validator.ts";
@@ -98,4 +99,10 @@ export const submitForm = asyncHandler(async (req: Request, res: Response): Prom
   const data = await submitFormSchema.parseAsync(req.body);
   await submitContact(data);
   return res.status(200).json(new ApiResponse(200, null, "Form submitted successfully"));
+});
+
+export const getUserById = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  const result = await getDetails(id);
+  return res.status(200).json(new ApiResponse(200, result, "Seller details fetched successfully"));
 });

@@ -2,7 +2,7 @@ import { User } from "../../generated/prisma/index.js";
 import bcrypt from "bcrypt";
 import { safeUserSelect } from "../contants.ts";
 import { prisma } from "../db/config.ts";
-import { ContactForm, ImageUpload, ResetPassword, UpdateResponse, UserData } from "../types/user.types.ts";
+import { ContactForm, ImageUpload, ResetPassword, UpdateResponse, UserData, SellerDetails } from "../types/user.types.ts";
 import { AppError } from "../utils/app-error.ts";
 import { deleteFromCloudinary, uploadToCloudinary } from "../utils/cloudinary.ts";
 import sendMail from "../utils/nodemailer.ts";
@@ -90,7 +90,7 @@ export const updateUser = async (data: UserData): Promise<UpdateResponse> => {
       ...userData,
     },
   });
-  const { password, refreshToken, imagePublicId,...result } = user;
+  const { password, refreshToken, imagePublicId, ...result } = user;
   return { result };
 };
 
@@ -213,4 +213,58 @@ export const submitContact = async (data: ContactForm): Promise<void> => {
   await prisma.contact.create({
     data,
   });
+};
+
+export const getDetails = async (id: string): Promise<SellerDetails> => {
+  const result = await prisma.user.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      name: true,
+      contactNumber: true,
+      email: true,
+      address: true,
+      isVerified: true,
+      products: {
+        select: {
+          id: true,
+        },
+      },
+      reviewsReceived: {
+        select: {
+          id: true,
+          rating: true,
+          comment: true,
+          createdAt: true,
+          reviewer: {
+            select: {
+              id: true,
+              name: true,
+              imageUrl: true,
+            },
+          },
+        },
+      },
+    },
+  });
+  if (!result) {
+    throw new AppError(404, "User doesnt exist");
+  }
+  const totalProducts = result.products.length;
+  const reviews = result.reviewsReceived;
+  let averageRating = 0;
+  if (reviews.length > 0) {
+    averageRating = reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length;
+  }
+  return {
+    name: result.name,
+    contactNumber: result.contactNumber,
+    email: result.email,
+    address: result.address,
+    isVerified: result.isVerified,
+    totalProducts,
+    reviews,
+    averageRating,
+  };
 };
