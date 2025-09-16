@@ -1,8 +1,8 @@
 import React from "react";
 import type { Product } from "@/types/product/types";
-import { SeeMore } from "../ui/SeeMore";
+import { SeeMore } from "../../ui/SeeMore";
 import { Star, MapPin, Phone, Mail, Shield, Calendar, Tag, ShoppingCart } from "lucide-react";
-import { DialogBox } from "../ui/DialogBox";
+import { DialogBox } from "../../ui/DialogBox";
 import { useReportProduct, useReportUser } from "@/hooks/user/useReport";
 
 interface ProductDetailsCardProps {

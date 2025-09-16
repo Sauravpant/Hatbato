@@ -1,5 +1,5 @@
 import MapCard from "@/components/common/MapCard";
-import ProductDetailsCard from "@/components/common/ProductDetailsCard";
+import ProductDetailsCard from "@/components/user/product/ProductDetailsCard";
 import { ErrorMessage } from "@/components/ui/ErrorMessage";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { getProductById } from "@/services/productServices";

@@ -1,5 +1,5 @@
 import React from "react";
-import ProductCard from "@/components/common/ProductCard";
+import ProductCard from "@/components/user/product/ProductCard";
 import Spinner from "@/components/ui/Spinner";
 import type { Product } from "@/types/product/types";
 import type { ProductsGridProps } from "@/types/product/types";
