@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { FcGoogle } from "react-icons/fc";
 import { Eye, EyeOff, LoaderIcon } from "lucide-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { loginUser } from "@/features/auth/authSlice";
 import React, { useState } from "react";
@@ -14,9 +14,7 @@ import type { User } from "@/types/auth/types";
 
 export function LoginForm({ className, ...props }: React.ComponentProps<"form">) {
   const dispatch = useDispatch<AppDispatch>();
-  const location = useLocation();
   const navigate = useNavigate();
-  const from = location.state?.from?.pathname || "/";
 
   const { isLoading, error } = useSelector((state: RootState) => state.auth);
 
@@ -35,7 +33,7 @@ export function LoginForm({ className, ...props }: React.ComponentProps<"form">)
       if (user.role === "admin") {
         navigate("/admin", { replace: true });
       } else if (user.role === "user") {
-        navigate(from, { replace: true });
+        navigate("/", { replace: true });
       } else {
         navigate("/", { replace: true });
       }
