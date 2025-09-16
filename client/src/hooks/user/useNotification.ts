@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Notification } from "@/types/notifications/types";
 import { getNotifications, markAllAsRead, markNotificationAsRead } from "@/services/notificationServices";
-import { useAuthUser } from "./useAuthUser";
+import { useAuthUser } from "./useUser";
 
 export const useGetNotifications = () => {
   const user = useAuthUser();
