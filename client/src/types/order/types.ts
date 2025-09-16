@@ -1,12 +1,22 @@
 export interface Order {
   id: string;
-  createdAt: true;
-  status: true;
+  createdAt: Date;
+  status: "pending" | "accepted" | "rejected";
   product: {
     title: string;
     price: number;
     deliveryAvailable: boolean;
-    isBought: boolean;
+    imageUrl: string;
+  };
+  buyer: {
+    name: string;
+    contactNumber: string;
+    address: string;
+  };
+  seller: {
+    name: string;
+    contactNumber: string;
+    address: string;
   };
 }
 
