@@ -134,7 +134,7 @@ const Navbar: React.FC = () => {
                     </div>
                     <div className="p-2 space-y-1">
                       <Link
-                        to="/settings"
+                        to="/user/dashboard"
                         className="flex items-center px-3 py-2 text-xs sm:text-sm text-blue-200 hover:bg-blue-800/40 rounded-lg transition-all duration-200 hover:text-white cursor-pointer group/menu"
                         onClick={() => setProfileMenuOpen(false)}
                       >
