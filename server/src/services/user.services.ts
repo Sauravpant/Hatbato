@@ -2,7 +2,7 @@ import { User } from "../../generated/prisma/index.js";
 import bcrypt from "bcrypt";
 import { safeUserSelect } from "../contants.ts";
 import { prisma } from "../db/config.ts";
-import { ContactForm, ImageUpload, ResetPassword, UpdateResponse, UserData, SellerDetails } from "../types/user.types.ts";
+import { ContactForm, ImageUpload, ResetPassword, UpdateResponse, UserData, SellerDetails, UserStats } from "../types/user.types.ts";
 import { AppError } from "../utils/app-error.ts";
 import { deleteFromCloudinary, uploadToCloudinary } from "../utils/cloudinary.ts";
 import sendMail from "../utils/nodemailer.ts";
@@ -221,11 +221,13 @@ export const getDetails = async (id: string): Promise<SellerDetails> => {
       id,
     },
     select: {
+      id: true,
       name: true,
       contactNumber: true,
       email: true,
       address: true,
       isVerified: true,
+      imageUrl: true,
       products: {
         select: {
           id: true,
@@ -258,13 +260,47 @@ export const getDetails = async (id: string): Promise<SellerDetails> => {
     averageRating = reviews.reduce((acc, r) => acc + r.rating, 0) / reviews.length;
   }
   return {
+    id: result.id,
     name: result.name,
     contactNumber: result.contactNumber,
     email: result.email,
     address: result.address,
+    imageUrl: result.imageUrl,
     isVerified: result.isVerified,
     totalProducts,
     reviews,
     averageRating,
+  };
+};
+
+export const getStats = async (id: string): Promise<UserStats> => {
+  const result = await prisma.user.findUnique({
+    where: { id },
+    select: {
+      products: { select: { id: true } },
+      reportsMade: { select: { id: true } },
+      reviewsReceived: { select: { id: true } },
+      reviewsGiven: { select: { id: true } },
+      ordersMade: { select: { id: true } },
+      ordersReceived: { select: { id: true } },
+    },
+  });
+
+  if (!result) {
+    throw new Error("User not found");
+  }
+
+  const productsBought = await prisma.product.count({
+    where: { userId: id, isBought: true },
+  });
+
+  return {
+    totalProducts: result.products.length,
+    totalReportsMade: result.reportsMade.length,
+    totalReviewsReceived: result.reviewsReceived.length,
+    totalReviewsGiven: result.reviewsGiven.length,
+    totalOrdersMade: result.ordersMade.length,
+    totalOrdersReceived: result.ordersReceived.length,
+    productsBought,
   };
 };

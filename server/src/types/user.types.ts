@@ -32,11 +32,13 @@ export interface ContactForm {
 }
 
 export interface SellerDetails {
+  id: string;
   name: string;
   contactNumber: string;
   email: string;
   address: string;
   isVerified: boolean;
+  imageUrl: string | null;
   totalProducts: number;
   averageRating: number;
   reviews: {
@@ -50,4 +52,14 @@ export interface SellerDetails {
       imageUrl?: string | null;
     };
   }[];
+}
+
+export interface UserStats {
+  totalProducts: number;
+  totalReportsMade: number;
+  totalReviewsReceived: number;
+  totalReviewsGiven: number;
+  totalOrdersMade: number;
+  totalOrdersReceived: number;
+  productsBought: number;
 }
