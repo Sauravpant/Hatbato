@@ -15,6 +15,13 @@ import ProfilePage from "@/pages/user/ProfilePage";
 import UserSettingsLayout from "@/components/layout/UserSettingsLayout";
 import ProfileSettingsPage from "@/pages/user/ProfileSettingsPage";
 import AccountSettingsPage from "@/pages/user/AccountSettingsPage";
+import UserDashboardLayout from "@/components/layout/UserDashboardLayout";
+import Home from "@/pages/user/dashboard/Home";
+import OrderManagement from "@/pages/user/dashboard/OrderManagement";
+import ReportsManagement from "@/pages/user/dashboard/ReportsManagement";
+import ReviewManagement from "@/pages/user/dashboard/ReviewManagement";
+import ProductManagement from "@/pages/user/dashboard/ProductManagement";
+import SellerDetails from "@/pages/user/SellerDetails";
 
 const AppRoutes = () => {
   return (
@@ -30,6 +37,7 @@ const AppRoutes = () => {
       {/* User Protected Routes */}
       <Route element={<UserLayout />}>
         <Route element={<ProtectedRoute allowedRole="user" />}>
+        <Route path="/seller/:id" element={<SellerDetails/>}/>
           <Route path="/sell" element={<SellProduct />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/settings" element={<UserSettingsLayout />}>
@@ -38,6 +46,17 @@ const AppRoutes = () => {
           </Route>
         </Route>
       </Route>
+
+      <Route element={<ProtectedRoute allowedRole="user" />}>
+        <Route path="/user/dashboard" element={<UserDashboardLayout />}>
+          <Route index element={<Home />} />
+          <Route path="products" element={<ProductManagement />} />
+          <Route path="reviews" element={<ReviewManagement />} />
+          <Route path="reports" element={<ReportsManagement />} />
+          <Route path="orders" element={<OrderManagement />} />
+        </Route>
+      </Route>
+
       {/* Authentication Routes */}
       <Route path="/auth/login" element={<LoginPage />} />
       <Route path="/auth/signup" element={<SignupPage />} />
