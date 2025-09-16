@@ -35,6 +35,14 @@ export interface RatingStats {
   5: number;
 }
 
+export interface CreateReview {
+  rating: number;
+  comment?: string;
+}
+export interface UpdateReview {
+  rating: number;
+  comment?: string;
+}
 export interface ApiResponse<T> {
   success: boolean;
   statusCode: string;

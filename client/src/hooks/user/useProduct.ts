@@ -2,7 +2,7 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getAllProducts, getProductById, updateProduct, deleteProduct, getMyProducts } from "@/services/productServices";
 import type { ApiResponse, GetItems, Product, UpdatedProduct, UpdateProduct } from "@/types/product/types";
 import toast from "react-hot-toast";
-import { useAuthUser } from "./useAuthUser";
+import { useAuthUser } from "./useUser";
 
 // Fetch all products
 export const useAllProducts = (params?: Record<string, any>) => {

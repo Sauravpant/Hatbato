@@ -8,9 +8,9 @@ import {
   getAverageData,
   getMyStats,
 } from "@/services/reviewServices";
-import type { BuyerReview, SellerReview, SellerAverage, RatingStats, ApiResponse } from "@/types/reviews/types";
+import type { BuyerReview, SellerReview, SellerAverage, RatingStats, ApiResponse, CreateReview, UpdateReview } from "@/types/reviews/types";
 import toast from "react-hot-toast";
-import { useAuthUser } from "./useAuthUser";
+import { useAuthUser } from "./useUser";
 //Get given reviews
 export const useMyGivenReviews = () => {
   const user = useAuthUser();
@@ -31,10 +31,10 @@ export const useMyReceivedReviews = () => {
   });
 };
 
-//Get avergae data
+//Get average data
 export const useAverageData = () => {
   return useQuery<ApiResponse<SellerAverage>, unknown>({
-    queryKey: ["sellerAverage"],
+    queryKey: ["myAverage"],
     queryFn: getAverageData,
     staleTime: Infinity,
   });
@@ -53,11 +53,15 @@ export const useMyStats = () => {
 export const useCreateReview = () => {
   const queryClient = useQueryClient();
   const user = useAuthUser();
-  return useMutation<ApiResponse<null>, unknown, { sellerId: string }>({
-    mutationFn: ({ sellerId }: { sellerId: string }) => createReview(sellerId),
+  return useMutation<ApiResponse<null>, unknown, { sellerId: string; data: CreateReview }>({
+    mutationFn: ({ sellerId, data }: { sellerId: string; data: CreateReview }) => createReview(sellerId, data),
     onSuccess: (data) => {
       toast.success(data.message || "Review created successfully");
-      queryClient.invalidateQueries({ queryKey: ["myGivenReviews", "myReceivedReviews", "sellerAverage", "myStats", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["myGivenReviews", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["user-details"] });
+      queryClient.invalidateQueries({ queryKey: ["myReceivedReviews", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["myAverage", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["myStats", user?.id] });
     },
     onError: (err: any) => {
       toast.error(err?.response?.data?.message || "Failed to create review");
@@ -69,11 +73,15 @@ export const useCreateReview = () => {
 export const useUpdateReview = () => {
   const queryClient = useQueryClient();
   const user = useAuthUser();
-  return useMutation<ApiResponse<null>, unknown, { reviewId: string }>({
-    mutationFn: ({ reviewId }: { reviewId: string }) => updateReview(reviewId),
+  return useMutation<ApiResponse<null>, unknown, { reviewId: string; data: UpdateReview }>({
+    mutationFn: ({ reviewId, data }: { reviewId: string; data: UpdateReview }) => updateReview(reviewId, data),
     onSuccess: (data) => {
       toast.success(data.message || "Review updated successfully");
-      queryClient.invalidateQueries({ queryKey: ["myGivenReviews", "myReceivedReviews", "sellerAverage", "myStats", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["myGivenReviews", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["myReceivedReviews", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["user-details"] });
+      queryClient.invalidateQueries({ queryKey: ["myAverage", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["myStats", user?.id] });
     },
     onError: (err: any) => {
       toast.error(err?.response?.data?.message || "Failed to update review");
@@ -89,7 +97,11 @@ export const useDeleteReview = () => {
     mutationFn: ({ reviewId }: { reviewId: string }) => deleteReview(reviewId),
     onSuccess: (data) => {
       toast.success(data.message || "Review deleted successfully");
-      queryClient.invalidateQueries({ queryKey: ["myGivenReviews", "myReceivedReviews", "sellerAverage", "myStats", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["myGivenReviews", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["myReceivedReviews", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["user-details"] });
+      queryClient.invalidateQueries({ queryKey: ["myAverage", user?.id] });
+      queryClient.invalidateQueries({ queryKey: ["myStats", user?.id] });
     },
     onError: (err: any) => {
       toast.error(err?.response?.data?.message || "Failed to delete review");

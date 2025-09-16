@@ -50,3 +50,26 @@ export interface UpdateProfile {
   contactNumber?: string;
   address?: string;
 }
+
+export interface UserDetails {
+  id:string;
+  name: string;
+  contactNumber: string;
+  email: string;
+  address: string;
+  isVerified: boolean;
+  totalProducts: number;
+  averageRating: number;
+  imageUrl?: string | null;
+  reviews: {
+    id: string;
+    rating: number;
+    comment?: string | null;
+    createdAt: Date;
+    reviewer: {
+      id: string;
+      name: string;
+      imageUrl?: string | null;
+    };
+  }[];
+}
