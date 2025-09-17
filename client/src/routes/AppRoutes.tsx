@@ -22,6 +22,8 @@ import ReportsManagement from "@/pages/user/dashboard/ReportsManagement";
 import ReviewManagement from "@/pages/user/dashboard/ReviewManagement";
 import ProductManagement from "@/pages/user/dashboard/ProductManagement";
 import SellerDetails from "@/pages/user/SellerDetails";
+import AdminLayout from "@/components/layout/AdminLayout";
+import Dashboard from "@/pages/admin/Dashboard";
 
 const AppRoutes = () => {
   return (
@@ -37,7 +39,7 @@ const AppRoutes = () => {
       {/* User Protected Routes */}
       <Route element={<UserLayout />}>
         <Route element={<ProtectedRoute allowedRole="user" />}>
-        <Route path="/seller/:id" element={<SellerDetails/>}/>
+          <Route path="/seller/:id" element={<SellerDetails />} />
           <Route path="/sell" element={<SellProduct />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/settings" element={<UserSettingsLayout />}>
@@ -54,6 +56,13 @@ const AppRoutes = () => {
           <Route path="reviews" element={<ReviewManagement />} />
           <Route path="reports" element={<ReportsManagement />} />
           <Route path="orders" element={<OrderManagement />} />
+        </Route>
+      </Route>
+
+      {/*Admin Routes*/}
+      <Route element={<ProtectedRoute allowedRole="admin" />}>
+        <Route path="/admin" element={<AdminLayout />}>
+        <Route index element={<Dashboard/>}/>
         </Route>
       </Route>
 
