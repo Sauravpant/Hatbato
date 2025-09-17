@@ -20,8 +20,8 @@ export const useUserById = (userId: string) =>
 
 export const useDeleteUser = () => {
   const queryClient = useQueryClient();
-  return useMutation<ApiResponse<null>, unknown, string>({
-    mutationFn: deleteUser,
+  return useMutation<ApiResponse<null>, unknown, { id: string }>({
+    mutationFn: ({ id }: { id: string }) => deleteUser(id),
     onSuccess: (data) => {
       toast.success(data.message || "User deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["allUsers"] });

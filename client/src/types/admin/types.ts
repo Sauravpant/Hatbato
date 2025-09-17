@@ -44,6 +44,9 @@ export interface UserSummary {
   id: string;
   name: string;
   email: string;
+  contactNumber: string;
+  imageUrl:string;
+  address: string;
   isActive: boolean;
   isVerified: boolean;
   createdAt: string;
@@ -54,6 +57,7 @@ export interface PaginatedUsers {
   total: number;
   page: number;
   limit: number;
+  totalPages: number;
 }
 
 export interface UserProfile extends UserSummary {
@@ -156,8 +160,8 @@ export interface ReviewsParams {
 }
 
 export interface UserParams {
-  page?: number;
-  limit?: number;
+  page?: string;
+  limit?: string;
   search?: string;
 }
 export interface CategoryProduct {
