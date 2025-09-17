@@ -41,7 +41,7 @@ export const getReportStats = async (): Promise<ApiResponse<ReportStats>> => {
 };
 
 export const getCategoryInfo = async (): Promise<ApiResponse<CategoryInfo[]>> => {
-  const response = await api.get<ApiResponse<CategoryInfo[]>>("/get-category-info");
+  const response = await api.get<ApiResponse<CategoryInfo[]>>("/admin/get-category-info");
   return response.data;
 };
 
