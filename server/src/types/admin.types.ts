@@ -55,6 +55,7 @@ export interface PaginatedUsers {
   total: number;
   page: number;
   limit: number;
+  totalPages:number;
 }
 
 export interface UserProfile {

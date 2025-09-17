@@ -160,6 +160,7 @@ export const getAllUsersService = async ({ page = 1, limit = 10, search }: GetAl
     total,
     page: pageNumber,
     limit: limitNumber,
+    totalPages:Math.ceil(total/limitNumber)
   };
 };
 
