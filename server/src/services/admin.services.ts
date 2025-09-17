@@ -63,13 +63,13 @@ export const getProductStatsService = async (): Promise<ProductStats> => {
       _all: true,
     },
   });
-  const soldProducts = await prisma.product.aggregate({
-    _count: {
+  const soldProducts = await prisma.product.count({
+    where: {
       isBought: true,
     },
   });
-  const sold = soldProducts._count.isBought;
-  const unsold = totalProducts - soldProducts._count.isBought;
+  const sold = soldProducts;
+  const unsold = totalProducts - soldProducts;
   const categoryMap = await prisma.category.findMany();
   const productCountByCategoryId = Object.fromEntries(productsByCategory.map((pc) => [pc.categoryId, pc._count._all]));
   const productsByCategories = categoryMap.map((c) => ({
