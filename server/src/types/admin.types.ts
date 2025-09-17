@@ -39,6 +39,9 @@ export interface UserSummary {
   id: string;
   name: string;
   email: string;
+  contactNumber:string;
+  imageUrl:string;
+  address:string;
   isActive: boolean;
   isVerified: boolean;
   createdAt: Date;

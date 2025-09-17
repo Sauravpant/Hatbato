@@ -23,17 +23,17 @@ export const updateCategorySchema = z.object({
 export type UpdateCategory = z.infer<typeof updateCategorySchema>;
 
 export const getAllReviewsSchema = z.object({
-  page: z.number().min(1).optional(),
-  limit: z.number().min(1).max(100).optional(),
-  userName: z.string().trim().optional(),
+  page: z.coerce.number().min(1).optional(),
+  limit: z.coerce.number().min(1).max(100).optional(),
+  userName: z.coerce.string().trim().optional(),
   sortOrder: z.enum(["asc", "desc"]).optional(),
 });
 export type GetReviews = z.infer<typeof getAllReviewsSchema>;
 
 //Orders validation
 export const getAllOrdersSchema = z.object({
-  page: z.number().min(1).optional(),
-  limit: z.number().min(1).max(100).optional(),
+  page: z.coerce.number().min(1).optional(),
+  limit: z.coerce.number().min(1).max(100).optional(),
   status: z.enum(["pending", "accepted", "rejected"]).optional(),
   sortOrder: z.enum(["asc", "desc"]).optional(),
 });
@@ -41,8 +41,8 @@ export type GetOrders = z.infer<typeof getAllOrdersSchema>;
 
 //Report Validation
 export const getAllReportsSchema = z.object({
-  page: z.number().min(1).optional(),
-  limit: z.number().min(1).max(100).optional(),
+  page: z.coerce.number().min(1).optional(),
+  limit: z.coerce.number().min(1).max(100).optional(),
   status: z.enum(["pending", "resolved"]).optional(),
   reportFor: z.enum(["user", "product"]).optional(),
 });

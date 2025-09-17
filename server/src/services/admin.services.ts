@@ -146,7 +146,10 @@ export const getAllUsersService = async ({ page = 1, limit = 10, search }: GetAl
       select: {
         id: true,
         name: true,
+        contactNumber:true,
+        imageUrl:true,
         email: true,
+        address:true,
         isActive: true,
         isVerified: true,
         createdAt: true,
