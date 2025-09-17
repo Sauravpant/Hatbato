@@ -21,11 +21,19 @@ const App = () => {
         //Hit API endpoint to fetch the user using the access token from the cookies
         const user = await api.get("/user/me");
         dispatch(setUser(user.data.data));
+        if (user.data.data.role === "admin") {
+          navigate("/admin");
+        } else {
+          navigate("/");
+        }
       } catch (err: any) {
         //Hit API endpoint to get the new access token if the refresh token exists
         try {
           const user = await api.get("/auth/refresh-token");
           dispatch(setUser(user.data.data));
+          if (user.data.data.role === "admin") {
+            navigate("/admin");
+          }
         } catch (error) {
           dispatch(setCheckingAuthFalse());
           navigate("/");
