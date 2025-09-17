@@ -1,4 +1,4 @@
-import { Category } from "../../generated/prisma/index.js";
+import { Category, Prisma } from "../../generated/prisma/index.js";
 
 export interface UserStats {
   totalUsers: number;
@@ -165,3 +165,16 @@ export interface ReportItem {
     title: string;
   };
 }
+
+export type CategoryInfo = Prisma.CategoryGetPayload<{
+  select: {
+    name: true;
+    id: true;
+    slug: true;
+    products: {
+      select: {
+        id: true;
+      };
+    };
+  };
+}>;

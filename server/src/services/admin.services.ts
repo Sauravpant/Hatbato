@@ -10,6 +10,7 @@ import {
   PaginatedReviews,
   PaginatedOrders,
   PaginatedReports,
+  CategoryInfo,
 } from "../types/admin.types.ts";
 import { safeUserSelect } from "../contants.ts";
 import { AppError } from "../utils/app-error.ts";
@@ -308,6 +309,25 @@ export const getCategoryDetailsService = async (categoryId: string): Promise<Cat
   });
   const total = sold + unsold;
   return { category, unsoldProducts: unsold, soldProducts: sold, totalProducts: total };
+};
+
+export const getCategoryStats = async (): Promise<CategoryInfo[]> => {
+  const category = await prisma.category.findMany({
+    select: {
+      name: true,
+      id: true,
+      slug: true,
+      products: {
+        select: {
+          id: true,
+        },
+      },
+    },
+  });
+  if (!category) {
+    throw new AppError(404, "No categories found");
+  }
+  return category;
 };
 
 //Product Management

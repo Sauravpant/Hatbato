@@ -21,6 +21,7 @@ import {
   getAllReportsController,
   resolveReportController,
   deleteReportController,
+  getCategoryInfo,
 } from "../controllers/admin.controller.ts";
 import { getAllProducts, getProductById } from "../controllers/product.controller.ts";
 
@@ -42,6 +43,7 @@ router.delete("/delete-user/:userId", deleteUser);
 
 // Category management
 router.post("/create-category", addCategory);
+router.get("/get-category-info", getCategoryInfo);
 router.get("/get-all-category", getAllCategory);
 router.get("/get-single-category/:categoryId", getCategoryDetails);
 router.delete("/delete-category/:categoryId", deleteCategory);

@@ -21,6 +21,7 @@ import {
   getAllReportsService,
   resolveReportService,
   deleteReportService,
+  getCategoryStats,
 } from "../services/admin.services.ts";
 import {
   addCategorySchema,
@@ -104,6 +105,11 @@ export const getCategoryDetails = asyncHandler(async (req: Request, res: Respons
   const { categoryId } = req.params;
   const result = await getCategoryDetailsService(categoryId);
   return res.status(201).json(new ApiResponse(201, result, "Category detauls fetched successfully"));
+});
+
+export const getCategoryInfo = asyncHandler(async (req: Request, res: Response) => {
+  const result = await getCategoryStats();
+  return res.status(200).json(new ApiResponse(200, result, "Categories fetched successfully"));
 });
 
 //Product management
