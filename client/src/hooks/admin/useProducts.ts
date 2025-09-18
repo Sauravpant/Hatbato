@@ -6,11 +6,11 @@ import type { ApiResponse } from "@/types/admin/types";
 // Products
 export const useDeleteProduct = () => {
   const queryClient = useQueryClient();
-  return useMutation<ApiResponse<null>, unknown, string>({
-    mutationFn: deleteProduct,
+  return useMutation<ApiResponse<null>, unknown, { id: string }>({
+    mutationFn: ({ id }: { id: string }) => deleteProduct(id),
     onSuccess: (data) => {
       toast.success(data.message || "Product deleted successfully");
-      queryClient.invalidateQueries({ queryKey: ["allProducts"] });
+      queryClient.invalidateQueries({ queryKey: ["products"] });
       queryClient.invalidateQueries({ queryKey: ["productStats"] });
     },
     onError: (err: any) => {
