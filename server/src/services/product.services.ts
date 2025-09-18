@@ -115,7 +115,7 @@ export const getById = async (productId: string): Promise<ProductById> => {
       userId: product.user.id,
     },
   });
-  const {...userData } = product.user;
+  const { ...userData } = product.user;
   return {
     ...product,
     categoryId: product.categoryId,
@@ -221,7 +221,7 @@ export const updateItem = async (productData: UpdateProduct, productId: string, 
   return updatedProduct;
 };
 
-export const getAll = async (filters: GetProduct): Promise<any> => {
+export const getAll = async (filters: GetProduct, role?: string): Promise<any> => {
   const { search, minPrice, maxPrice, category, status, sort, lat, lng, page = 1, limit = 10 } = filters;
   let { radius } = filters;
   radius *= 1000;
@@ -279,7 +279,7 @@ export const getAll = async (filters: GetProduct): Promise<any> => {
   // Pagination & Sorting
   const offset = (page - 1) * limit;
   const orderBy = sort === "asc" ? `"postedAt" ASC` : `"postedAt" DESC`;
-  whereClauses.push(`"isBought" = false`);
+  if (role !== "admin") whereClauses.push(`"isBought" = false`);
 
   // Combine all the where logic
   const whereClause = whereClauses.length > 0 ? `WHERE ${whereClauses.join(" AND ")}` : "";
@@ -287,7 +287,7 @@ export const getAll = async (filters: GetProduct): Promise<any> => {
   //Using raw query as prisma doesnt support PostGIS
   const products = await prisma.$queryRawUnsafe(
     `
-  SELECT id, title, description, price, address, latitude, longitude, "imageUrl", "imagePublicId", "deliveryAvailable", status, "postedAt", "userId", "categoryId"
+  SELECT id, title, description, price, address, latitude, longitude, "imageUrl", "imagePublicId", "isBought", "deliveryAvailable", status, "postedAt", "userId", "categoryId"
   FROM "Product"
   ${whereClause}
   ORDER BY ${orderBy}

@@ -142,7 +142,6 @@ export const getAllOrdersController = asyncHandler(async (req: Request, res: Res
 
 //Report Management
 export const getAllReportsController = asyncHandler(async (req: Request, res: Response) => {
-   console.log("Query params:", req.query); // Add this debug line
   const validatedData = await getAllReportsSchema.parseAsync(req.query);
   const reports = await getAllReportsService(validatedData);
   return res.status(200).json(new ApiResponse(200, reports, "Reports fetched successfully"));

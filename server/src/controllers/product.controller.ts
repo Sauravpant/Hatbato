@@ -63,8 +63,9 @@ export const updateProduct = asyncHandler(async (req: AuthenticatedRequest, res:
   return res.status(200).json(new ApiResponse(200, products, "Product updated successfully"));
 });
 
-export const getAllProducts = asyncHandler(async (req: Request, res: Response): Promise<Response> => {
+export const getAllProducts = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
+  const role=req?.user?.role;
   const validatedData = await getProductSchema.parseAsync(req.query);
-  const products = await getAll(validatedData);
+  const products = await getAll(validatedData,role);
   return res.status(200).json(new ApiResponse(200, products, "Products fetched successfully"));
 });
