@@ -29,13 +29,13 @@ export const loginUser = asyncHandler(async (req: Request, res: Response): Promi
     .cookie("accessToken", accessToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: 30 * 60 * 1000,
     })
     .cookie("refreshToken", refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: 30 * 24 * 60 * 60 * 1000,
     })
     .json(new ApiResponse(200, userData, "User Logged In Successfully"));
@@ -47,7 +47,7 @@ export const logOutUser = asyncHandler(async (req: AuthenticatedRequest, res: Re
   const options = {
     httpOnly: true,
     secure: true,
-    sameSite: "strict" as const,
+    sameSite: "none" as const,
   };
   return res
     .status(200)
@@ -129,7 +129,7 @@ export const refreshAccessToken = asyncHandler(async (req: Request, res: Respons
     .cookie("accessToken", newAccessToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "none",
       maxAge: 30 * 60 * 1000,
     })
     .json(new ApiResponse(200, data, "Access token refreshed successfully"));
