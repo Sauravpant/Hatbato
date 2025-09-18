@@ -22,6 +22,8 @@ import {
   resolveReportController,
   deleteReportController,
   getCategoryInfo,
+  getUserQueries,
+  deleteQueries,
 } from "../controllers/admin.controller.ts";
 import { getAllProducts, getProductById } from "../controllers/product.controller.ts";
 
@@ -51,6 +53,7 @@ router.patch("/update-category/:categoryId", updateCategory);
 
 // Product management
 router.delete("/delete-product/:productId", deleteProduct);
+router.get("/product",getAllProducts)
 router.get("/get-all-products", getAllProducts);
 router.get("/get-single-product/:id", getProductById);
 
@@ -65,5 +68,9 @@ router.get("/get-all-orders", getAllOrdersController);
 router.get("/get-all-reports", getAllReportsController);
 router.patch("/resolve-report/:reportId", resolveReportController);
 router.delete("/delete-report/:reportId", deleteReportController);
+
+//Contact management
+router.get("/contacts", getUserQueries);
+router.delete("/delete-contact/:id", deleteQueries);
 
 export default router;

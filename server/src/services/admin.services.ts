@@ -15,7 +15,7 @@ import {
 import { safeUserSelect } from "../contants.ts";
 import { AppError } from "../utils/app-error.ts";
 import { AddCategory, GetOrders, GetReport, GetReviews, UpdateCategory } from "../validators/admin.validators.ts";
-import { Category } from "../../generated/prisma/index.js";
+import { Category, Contact } from "../../generated/prisma/index.js";
 
 //For Dashboard stats
 export const getUserStatsService = async (): Promise<UserStats> => {
@@ -146,10 +146,10 @@ export const getAllUsersService = async ({ page = 1, limit = 10, search }: GetAl
       select: {
         id: true,
         name: true,
-        contactNumber:true,
-        imageUrl:true,
+        contactNumber: true,
+        imageUrl: true,
         email: true,
-        address:true,
+        address: true,
         isActive: true,
         isVerified: true,
         createdAt: true,
@@ -163,7 +163,7 @@ export const getAllUsersService = async ({ page = 1, limit = 10, search }: GetAl
     total,
     page: pageNumber,
     limit: limitNumber,
-    totalPages:Math.ceil(total/limitNumber)
+    totalPages: Math.ceil(total / limitNumber),
   };
 };
 
@@ -490,11 +490,6 @@ export const getAllReportsService = async (filters: GetReport): Promise<Paginate
     skip: (page - 1) * limit,
     take: limit,
   });
-  if (data.length === 0) {
-    {
-      throw new AppError(404, "No reports found");
-    }
-  }
   const total = await prisma.report.count({
     where: whereClause,
   });
@@ -547,3 +542,18 @@ export const deleteReportService = async (reportId: string): Promise<void> => {
     },
   });
 };
+
+//Contacts Management
+
+export const getContacts = async ():Promise<Contact[]> => {
+  const contacts = await prisma.contact.findMany();
+  return contacts;
+};
+
+export const deleteContact=async(id:string):Promise<void> => {
+await prisma.contact.delete({
+  where:{
+    id
+  }
+})
+}

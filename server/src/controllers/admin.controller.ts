@@ -22,6 +22,8 @@ import {
   resolveReportService,
   deleteReportService,
   getCategoryStats,
+  getContacts,
+  deleteContact,
 } from "../services/admin.services.ts";
 import {
   addCategorySchema,
@@ -120,39 +122,53 @@ export const deleteProduct = asyncHandler(async (req: Request, res: Response): P
 });
 
 //Review Management
-export const getAllReviews = async (req: Request, res: Response) => {
+export const getAllReviews = asyncHandler(async (req: Request, res: Response) => {
   const validatedData = await getAllReviewsSchema.parseAsync(req.query);
   const reviews = await getAllReviewsService(validatedData);
   return res.status(200).json(new ApiResponse(200, reviews, "Reviews fetched successfully"));
-};
+});
 
-export const deleteReview = async (req: Request, res: Response) => {
+export const deleteReview = asyncHandler(async (req: Request, res: Response) => {
   const { reviewId } = req.params;
   await deleteReviewService(reviewId);
   return res.status(200).json(new ApiResponse(200, null, "Review deleted successfully"));
-};
+});
 //Order Management
-export const getAllOrdersController = async (req: Request, res: Response) => {
+export const getAllOrdersController = asyncHandler(async (req: Request, res: Response) => {
   const parseResult = await getAllOrdersSchema.parseAsync(req.query);
   const orders = await getAllOrdersService(parseResult);
   return res.status(200).json(new ApiResponse(200, orders, "Orders fetched successfully"));
-};
+});
 
 //Report Management
-export const getAllReportsController = async (req: Request, res: Response) => {
+export const getAllReportsController = asyncHandler(async (req: Request, res: Response) => {
+   console.log("Query params:", req.query); // Add this debug line
   const validatedData = await getAllReportsSchema.parseAsync(req.query);
   const reports = await getAllReportsService(validatedData);
   return res.status(200).json(new ApiResponse(200, reports, "Reports fetched successfully"));
-};
+});
 
-export const resolveReportController = async (req: Request, res: Response) => {
+export const resolveReportController = asyncHandler(async (req: Request, res: Response) => {
   const { reportId } = req.params;
   await resolveReportService(reportId);
   return res.status(200).json(new ApiResponse(200, null, "Report resolved successfully"));
-};
+});
 
-export const deleteReportController = async (req: Request, res: Response) => {
+export const deleteReportController = asyncHandler(async (req: Request, res: Response) => {
   const { reportId } = req.params;
   await deleteReportService(reportId);
   return res.status(200).json(new ApiResponse(200, null, "Report deleted successfully"));
-};
+});
+
+//Get user queries
+
+export const getUserQueries = asyncHandler(async (req: Request, res: Response) => {
+  const result = await getContacts();
+  return res.status(200).json(new ApiResponse(200, result, "Contacts fetched successfully"));
+});
+
+export const deleteQueries = asyncHandler(async (req: Request, res: Response) => {
+  const { id } = req.params;
+  await deleteContact(id);
+  return res.status(200).json(new ApiResponse(200, null, "Contact deleted successfully"));
+});
