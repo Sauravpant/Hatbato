@@ -16,8 +16,8 @@ export const useAllReports = (params?: ReportParams) =>
 //Resolve a report
 export const useResolveReport = () => {
   const queryClient = useQueryClient();
-  return useMutation<ApiResponse<null>, unknown, string>({
-    mutationFn: resolveReport,
+  return useMutation<ApiResponse<null>, unknown, { id: string }>({
+    mutationFn: ({ id }: { id: string }) => resolveReport(id),
     onSuccess: (data) => {
       toast.success(data.message || "Report resolved successfully");
       queryClient.invalidateQueries({ queryKey: ["allReports"] });
@@ -32,8 +32,8 @@ export const useResolveReport = () => {
 //Delete a report
 export const useDeleteReport = () => {
   const queryClient = useQueryClient();
-  return useMutation<ApiResponse<null>, unknown, string>({
-    mutationFn: deleteReport,
+  return useMutation<ApiResponse<null>, unknown, { id: string }>({
+    mutationFn: ({ id }: { id: string }) => deleteReport(id),
     onSuccess: (data) => {
       toast.success(data.message || "Report deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["allReports"] });
