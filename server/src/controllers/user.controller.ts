@@ -34,8 +34,10 @@ export const updateProfileDetails = asyncHandler(async (req: AuthenticatedReques
 });
 // Controller to upload the user's profile picture
 export const uploadProfilePicture = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-  const imagePath = req.file.path;
-  const result = await uploadPicture({ imagePath, id: req.user.id });
+      if (!req.file) {
+      throw new AppError(400, "Image is required");
+    }
+  const result = await uploadPicture({ fileBuffer: req.file.buffer, fileName: req.file.originalname, id: req.user.id });
   return res.status(200).json(new ApiResponse(200, result, "Image uploaded successfully"));
 });
 

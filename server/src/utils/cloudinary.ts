@@ -1,5 +1,4 @@
 import { v2 as cloudinary } from "cloudinary";
-import fs from "fs";
 
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME!,
@@ -7,19 +6,27 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_SECRET_KEY!,
 });
 
-export const uploadToCloudinary = async (filePath: string): Promise<any> => {
-  try {
-    if (!filePath) return null;
-    const response = await cloudinary.uploader.upload(filePath, {
-      resource_type: "image",
-      folder:"BhetBato"
-    });
-    fs.unlinkSync(filePath);
-    return response;
-  } catch (err) {
-    fs.existsSync(filePath) && fs.unlinkSync(filePath);
-    throw err;
-  }
+interface CloudinaryUploadResult {
+  public_id: string;
+  secure_url: string;
+  [key: string]: any;
+}
+
+export const uploadToCloudinary = async (fileBuffer: Buffer, fileName: string): Promise<CloudinaryUploadResult> => {
+  return new Promise((resolve, reject) => {
+    const stream = cloudinary.uploader.upload_stream(
+      {
+        resource_type: "image",
+        folder: "BhetBato",
+        public_id: fileName,
+      },
+      (error, result) => {
+        if (error) return reject(error);
+        resolve(result as CloudinaryUploadResult);
+      }
+    );
+    stream.end(fileBuffer);
+  });
 };
 
 export const deleteFromCloudinary = async (publicId: string): Promise<void> => {

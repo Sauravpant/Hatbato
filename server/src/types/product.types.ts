@@ -11,8 +11,11 @@ export interface ProductType {
   deliveryAvailable: boolean;
   latitude: number;
   longitude: number;
-  productImage: string;
+  productImage?: string; 
+  fileBuffer?: Buffer;    
+  fileName?: string;      
 }
+
 
 export interface ProductResult {
   id: string;

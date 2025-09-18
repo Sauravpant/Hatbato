@@ -8,10 +8,11 @@ import { deleteFromCloudinary, uploadToCloudinary } from "../utils/cloudinary";
 import sendMail from "../utils/nodemailer";
 
 export const uploadPicture = async (data: ImageUpload): Promise<string> => {
-  if (!data.imagePath) {
+  if (!data.fileBuffer) {
     throw new AppError(400, "Image is required");
   }
-  const uploadedImage = await uploadToCloudinary(data.imagePath);
+
+  const uploadedImage = await uploadToCloudinary(data.fileBuffer, data.fileName);
   if (!uploadedImage) {
     throw new AppError(500, "Failed to upload image. Please try again later.");
   }

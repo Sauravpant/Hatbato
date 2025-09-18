@@ -1,7 +1,8 @@
 import type { User } from "../../generated/prisma/index.js";
 
 export interface ImageUpload {
-  imagePath: string;
+  fileBuffer: Buffer;
+  fileName: string;
   id: string;
 }
 

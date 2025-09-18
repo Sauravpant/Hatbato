@@ -7,47 +7,36 @@ import { AppError } from "../utils/app-error";
 import { deleteFromCloudinary, uploadToCloudinary } from "../utils/cloudinary";
 import { GetProduct } from "../validators/product.validator";
 
-export const create = async (productData: ProductType): Promise<void> => {
+export const create = async (productData: ProductType & { fileBuffer?: Buffer; fileName?: string }): Promise<void> => {
   // Check if user exists
   const user = await prisma.user.findUnique({
-    where: {
-      id: productData.userid,
-    },
+    where: { id: productData.userid },
     select: safeUserSelect,
   });
-  if (!user) {
-    throw new AppError(404, "User does not exist.");
-  }
+  if (!user) throw new AppError(404, "User does not exist.");
 
-  // Check if the content is inappropriate
+  // Check inappropriate content
   const isNotSafe = await checkContent(`Title:${productData.title}, Description:${productData.description},Address:${productData.address}`);
-  if (isNotSafe) {
-    throw new AppError(400, "The product details contains some inappropriate words");
-  }
+  if (isNotSafe) throw new AppError(400, "The product details contains some inappropriate words");
 
-  // Check if category exists
+  // Check category exists
   const category = await prisma.category.findFirst({
-    where: {
-      name: productData.category,
-    },
-    select: {
-      id: true,
-    },
+    where: { name: productData.category },
+    select: { id: true },
   });
-  if (!category) {
-    throw new AppError(404, "Category does not exist. Please enter a valid category.");
-  }
+  if (!category) throw new AppError(404, "Category does not exist. Please enter a valid category.");
 
-  // Upload product image to cloud storage
-  const uploadedImage = await uploadToCloudinary(productData.productImage);
-  if (!uploadedImage) {
-    throw new AppError(500, "Failed to upload image. Please try again.");
+  // Upload product image to Cloudinary
+  if (!productData.fileBuffer || !productData.fileName) {
+    throw new AppError(400, "Product image is required.");
   }
+  const uploadedImage = await uploadToCloudinary(productData.fileBuffer, productData.fileName);
+  if (!uploadedImage) throw new AppError(500, "Failed to upload image. Please try again.");
 
   // Insert product into database
-  const result = await prisma.$queryRaw`
+  await prisma.$queryRaw`
     INSERT INTO "Product" (
-      id,title, description, price, address,
+      id, title, description, price, address,
       location, latitude, longitude,
       "imageUrl", "imagePublicId", "deliveryAvailable",
       status, "postedAt", "userId", "categoryId"
@@ -161,64 +150,47 @@ export const getMyItems = async (userId: string): Promise<GetItems[]> => {
   });
   return products;
 };
-export const updateItem = async (productData: UpdateProduct, productId: string, userId: string, imagePath?: string): Promise<Product> => {
-  const product = await prisma.product.findUnique({
-    where: {
-      id: productId,
-    },
-  });
-  if (!product) {
-    throw new AppError(404, "Product doesnt exist");
-  }
-  if (product.userId !== userId) {
-    throw new AppError(401, "Unauthorized to update the product");
-  }
+export const updateItem = async (
+  productData: UpdateProduct,
+  productId: string,
+  userId: string,
+  fileBuffer?: Buffer,
+  fileName?: string
+): Promise<Product> => {
+  const product = await prisma.product.findUnique({ where: { id: productId } });
+  if (!product) throw new AppError(404, "Product doesn't exist");
+  if (product.userId !== userId) throw new AppError(401, "Unauthorized to update the product");
+
   let uploadedImage = null;
   let imagePublicId = product.imagePublicId;
   let imageUrl = product.imageUrl;
 
-  //If the new image is uploaded delete the old image from the cloud and upload the new one
-
-  if (imagePath) {
-    await deleteFromCloudinary(product.imagePublicId);
-    uploadedImage = await uploadToCloudinary(imagePath);
+  if (fileBuffer && fileName) {
+    if (product.imagePublicId) {
+      await deleteFromCloudinary(product.imagePublicId);
+    }
+    uploadedImage = await uploadToCloudinary(fileBuffer, fileName);
     imagePublicId = uploadedImage.public_id;
     imageUrl = uploadedImage.secure_url;
   }
 
   let categoryId;
   if (productData?.category) {
-    const category = await prisma.category.findFirst({
-      where: {
-        name: productData.category,
-      },
-    });
-    if (!category) {
-      throw new AppError(404, "Category doesnt exist");
-    }
+    const category = await prisma.category.findFirst({ where: { name: productData.category } });
+    if (!category) throw new AppError(404, "Category doesn't exist");
     categoryId = category.id;
   }
+
   const updateData: any = {
     ...(productData.title && { title: productData.title }),
     ...(productData.description && { description: productData.description }),
     ...(productData.price && { price: productData.price }),
     ...(productData.status && { status: productData.status }),
     ...(categoryId && { categoryId }),
-    ...(uploadedImage && {
-      imageUrl: uploadedImage.secure_url,
-      imagePublicId: uploadedImage.public_id,
-    }),
+    ...(uploadedImage && { imageUrl: uploadedImage.secure_url, imagePublicId: uploadedImage.public_id }),
   };
 
-  const updatedProduct = await prisma.product.update({
-    where: {
-      id: productId,
-    },
-    data: {
-      ...updateData,
-    },
-  });
-  return updatedProduct;
+  return prisma.product.update({ where: { id: productId }, data: updateData });
 };
 
 export const getAll = async (filters: GetProduct, role?: string): Promise<any> => {

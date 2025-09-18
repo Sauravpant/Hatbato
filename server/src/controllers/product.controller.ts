@@ -14,15 +14,17 @@ interface AuthenticatedRequest extends Request {
 // Controller to handle product creation
 export const createProduct = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
   const validatedData = (await createProductSchema.parseAsync(req.body)) as ProductType;
-  const imagePath = req.file?.path;
-  if (!imagePath) {
+
+  if (!req.file) {
     throw new AppError(400, "Product image is required.");
   }
-  // Create product in the database
+
+  // Pass file buffer and originalname instead of file path
   await create({
     ...validatedData,
     userid: req.user.id,
-    productImage: imagePath,
+    fileBuffer: req.file.buffer,
+    fileName: req.file.originalname,
   });
 
   return res.status(201).json(new ApiResponse(201, null, "Product created successfully."));
@@ -52,14 +54,16 @@ export const getMyProducts = asyncHandler(async (req: AuthenticatedRequest, res:
 
 // Controller to update a product
 export const updateProduct = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-  if (!req.body) {
-    throw new AppError(400, "All fields are empty");
-  }
+  if (!req.body) throw new AppError(400, "All fields are empty");
+
   const validatedData = await updateProductSchema.parseAsync(req.body);
   const { productId } = req.params;
-  const imagePath = req.file?.path;
+  const fileBuffer = req.file?.buffer;
+  const fileName = req.file?.originalname;
   const userId = req.user.id;
-  const products = await updateItem(validatedData, productId, userId, imagePath);
+
+  const products = await updateItem(validatedData, productId, userId, fileBuffer, fileName);
+
   return res.status(200).json(new ApiResponse(200, products, "Product updated successfully"));
 });
 
