@@ -3,9 +3,9 @@ import nodemailer from "nodemailer";
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "adminhatbato@gmail.com",
+    user: process.env.EMAIL_USER,
     pass: process.env.APP_PASSWORD,
-  },
+  },   
 });
 
 const sendMail = async (email, otp) => {
@@ -15,7 +15,7 @@ const sendMail = async (email, otp) => {
     <p>It will expire in 5 minutes. Please use it promptly.</p>
   `;
   await transporter.sendMail({
-    from: "adminhatbato@gmail.com",
+    from: "sauravpant777@gmail.com",
     to: email,
     subject: "Your Verification Code",
     text: textContent,
