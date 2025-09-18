@@ -1,8 +1,8 @@
-import { prisma } from "../db/config.ts";
-import { AppError } from "../utils/app-error.ts";
-import type { CreateReview, UpdateReview } from "../validators/review.validator.ts";
-import checkContent from "../utils/ai-client.ts";
-import { BuyerReview, SellerAverage, SellerReview } from "../types/review.types,.ts";
+import { prisma } from "../db/config";
+import { AppError } from "../utils/app-error";
+import type { CreateReview, UpdateReview } from "../validators/review.validator";
+import checkContent from "../utils/ai-client";
+import { BuyerReview, SellerAverage, SellerReview } from "../types/review.types,";
 export const handleCreateReview = async (reviewData: CreateReview, sellerId: string, userId: string): Promise<void> => {
   //Check the review for any inappropriate content
   const isNotSafe = await checkContent(`Review:${reviewData.comment}`);

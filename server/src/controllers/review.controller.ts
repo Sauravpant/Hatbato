@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { User } from "../../generated/prisma/index.js";
-import { asyncHandler } from "../utils/async-handler.ts";
-import { createReviewSchema } from "../validators/review.validator.ts";
+import { asyncHandler } from "../utils/async-handler";
+import { createReviewSchema } from "../validators/review.validator";
 import {
   getAverage,
   getStats,
@@ -10,8 +10,8 @@ import {
   handleUpdateReview,
   userReviewed,
   userReviews,
-} from "../services/review.services.ts";
-import { ApiResponse } from "../utils/api-response.ts";
+} from "../services/review.services";
+import { ApiResponse } from "../utils/api-response";
 interface AuthenticatedRequest extends Request {
   user: User;
 }

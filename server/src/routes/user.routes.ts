@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { verifyJWT } from "../middlewares/auth.middleware.ts";
+import { verifyJWT } from "../middlewares/auth.middleware";
 import {
   deactivateAccount,
   deleteProfilePicture,
@@ -12,13 +12,13 @@ import {
   submitForm,
   updateProfileDetails,
   uploadProfilePicture,
-} from "../controllers/user.controller.ts";
-import { upload } from "../middlewares/multer.middleware.ts";
+} from "../controllers/user.controller";
+import { upload } from "../middlewares/multer.middleware";
 
 const router = Router();
 router.get("/me", verifyJWT, getUser);
 router.get("/seller/:id", verifyJWT, getUserById);
-router.get("/get/stats",verifyJWT,getUserStats)
+router.get("/get/stats", verifyJWT, getUserStats);
 router.patch("/upload-picture", verifyJWT, upload.single("profilePicture"), uploadProfilePicture);
 router.delete("/delete-picture", verifyJWT, deleteProfilePicture);
 router.delete("/delete-user", verifyJWT, deleteUser);

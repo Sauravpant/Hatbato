@@ -1,7 +1,7 @@
 import { Report } from "../../generated/prisma/index.js";
-import { prisma } from "../db/config.ts";
-import { AppError } from "../utils/app-error.ts";
-import { ReportType } from "../validators/report.validator.ts";
+import { prisma } from "../db/config";
+import { AppError } from "../utils/app-error";
+import { ReportType } from "../validators/report.validator";
 
 export const handleUserReport = async (data: ReportType, userId: string, reportId: string): Promise<void> => {
   if (userId === reportId) {

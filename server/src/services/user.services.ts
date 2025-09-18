@@ -1,11 +1,11 @@
 import { User } from "../../generated/prisma/index.js";
 import bcrypt from "bcrypt";
-import { safeUserSelect } from "../contants.ts";
-import { prisma } from "../db/config.ts";
-import { ContactForm, ImageUpload, ResetPassword, UpdateResponse, UserData, SellerDetails, UserStats } from "../types/user.types.ts";
-import { AppError } from "../utils/app-error.ts";
-import { deleteFromCloudinary, uploadToCloudinary } from "../utils/cloudinary.ts";
-import sendMail from "../utils/nodemailer.ts";
+import { safeUserSelect } from "../contants";
+import { prisma } from "../db/config";
+import { ContactForm, ImageUpload, ResetPassword, UpdateResponse, UserData, SellerDetails, UserStats } from "../types/user.types";
+import { AppError } from "../utils/app-error";
+import { deleteFromCloudinary, uploadToCloudinary } from "../utils/cloudinary";
+import sendMail from "../utils/nodemailer";
 
 export const uploadPicture = async (data: ImageUpload): Promise<string> => {
   if (!data.imagePath) {

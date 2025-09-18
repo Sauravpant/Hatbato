@@ -1,7 +1,7 @@
 import { Router } from "express";
-import { verifyJWT } from "../middlewares/auth.middleware.ts";
-import { deleteReport, getAllReports, reportProduct, reportUser } from "../controllers/report.controller.ts";
-import { verifyUser } from "../middlewares/user-verify.middleware.ts";
+import { verifyJWT } from "../middlewares/auth.middleware";
+import { deleteReport, getAllReports, reportProduct, reportUser } from "../controllers/report.controller";
+import { verifyUser } from "../middlewares/user-verify.middleware";
 
 const router = Router();
 

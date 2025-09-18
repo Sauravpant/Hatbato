@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
-import { asyncHandler } from "../utils/async-handler.ts";
-import { ApiResponse } from "../utils/api-response.ts";
+import { asyncHandler } from "../utils/async-handler";
+import { ApiResponse } from "../utils/api-response";
 import {
   getUserStatsService,
   getProductStatsService,
@@ -24,7 +24,7 @@ import {
   getCategoryStats,
   getContacts,
   deleteContact,
-} from "../services/admin.services.ts";
+} from "../services/admin.services";
 import {
   addCategorySchema,
   getAllReviewsSchema,
@@ -32,7 +32,7 @@ import {
   updateCategorySchema,
   getAllOrdersSchema,
   getAllReportsSchema,
-} from "../validators/admin.validators.ts";
+} from "../validators/admin.validators";
 
 //Dashboard stats controllers
 export const getUserStats = asyncHandler(async (req: Request, res: Response): Promise<Response> => {

@@ -1,4 +1,4 @@
-import { prisma } from "../db/config.ts";
+import { prisma } from "../db/config";
 import {
   UserStats,
   ProductStats,
@@ -11,10 +11,10 @@ import {
   PaginatedOrders,
   PaginatedReports,
   CategoryInfo,
-} from "../types/admin.types.ts";
-import { safeUserSelect } from "../contants.ts";
-import { AppError } from "../utils/app-error.ts";
-import { AddCategory, GetOrders, GetReport, GetReviews, UpdateCategory } from "../validators/admin.validators.ts";
+} from "../types/admin.types";
+import { safeUserSelect } from "../contants";
+import { AppError } from "../utils/app-error";
+import { AddCategory, GetOrders, GetReport, GetReviews, UpdateCategory } from "../validators/admin.validators";
 import { Category, Contact } from "../../generated/prisma/index.js";
 
 //For Dashboard stats
@@ -545,15 +545,15 @@ export const deleteReportService = async (reportId: string): Promise<void> => {
 
 //Contacts Management
 
-export const getContacts = async ():Promise<Contact[]> => {
+export const getContacts = async (): Promise<Contact[]> => {
   const contacts = await prisma.contact.findMany();
   return contacts;
 };
 
-export const deleteContact=async(id:string):Promise<void> => {
-await prisma.contact.delete({
-  where:{
-    id
-  }
-})
-}
+export const deleteContact = async (id: string): Promise<void> => {
+  await prisma.contact.delete({
+    where: {
+      id,
+    },
+  });
+};

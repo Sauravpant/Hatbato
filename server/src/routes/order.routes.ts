@@ -1,14 +1,7 @@
 import { Router } from "express";
-import { verifyJWT } from "../middlewares/auth.middleware.ts";
-import { verifyUser } from "../middlewares/user-verify.middleware.ts";
-import {
-  createBuyRequest,
-  getMyRequests,
-  getReceivedRequests,
-  acceptOrder,
-  rejectOrder,
-  cancelOrderRequest,
-} from "../controllers/order.controller.ts";
+import { verifyJWT } from "../middlewares/auth.middleware";
+import { verifyUser } from "../middlewares/user-verify.middleware";
+import { createBuyRequest, getMyRequests, getReceivedRequests, acceptOrder, rejectOrder, cancelOrderRequest } from "../controllers/order.controller";
 
 const router = Router();
 

@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
-import { asyncHandler } from "../utils/async-handler.ts";
-import { createProductSchema, getProductSchema, updateProductSchema } from "../validators/product.validator.ts";
+import { asyncHandler } from "../utils/async-handler";
+import { createProductSchema, getProductSchema, updateProductSchema } from "../validators/product.validator";
 import { User } from "../../generated/prisma/index.js";
-import { AppError } from "../utils/app-error.ts";
-import { ApiResponse } from "../utils/api-response.ts";
-import { create, deleteItem, getAll, getById, getMyItems, updateItem } from "../services/product.services.ts";
-import { ProductType } from "../types/product.types.ts";
+import { AppError } from "../utils/app-error";
+import { ApiResponse } from "../utils/api-response";
+import { create, deleteItem, getAll, getById, getMyItems, updateItem } from "../services/product.services";
+import { ProductType } from "../types/product.types";
 
 interface AuthenticatedRequest extends Request {
   user: User;
@@ -64,8 +64,8 @@ export const updateProduct = asyncHandler(async (req: AuthenticatedRequest, res:
 });
 
 export const getAllProducts = asyncHandler(async (req: AuthenticatedRequest, res: Response): Promise<Response> => {
-  const role=req?.user?.role;
+  const role = req?.user?.role;
   const validatedData = await getProductSchema.parseAsync(req.query);
-  const products = await getAll(validatedData,role);
+  const products = await getAll(validatedData, role);
   return res.status(200).json(new ApiResponse(200, products, "Products fetched successfully"));
 });

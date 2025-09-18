@@ -1,6 +1,6 @@
-import { prisma } from "../db/config.ts";
+import { prisma } from "../db/config";
 import type { Notification } from "../../generated/prisma/index.js";
-import { AppError } from "../utils/app-error.ts";
+import { AppError } from "../utils/app-error";
 
 export const getNotifications = async (id: string): Promise<Notification[]> => {
   const notifications = await prisma.notification.findMany({

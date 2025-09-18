@@ -1,10 +1,10 @@
-import { prisma } from "../db/config.ts";
+import { prisma } from "../db/config";
 import bcrypt from "bcrypt";
-import type { RegisterData, LoginData, RegistrationResponse, LoginResponse, ResetPasswordData } from "../types/auth.types.ts";
-import { AppError } from "../utils/app-error.ts";
-import { generateAccessToken, generateRefreshToken } from "../utils/token.ts";
+import type { RegisterData, LoginData, RegistrationResponse, LoginResponse, ResetPasswordData } from "../types/auth.types";
+import { AppError } from "../utils/app-error";
+import { generateAccessToken, generateRefreshToken } from "../utils/token";
 import { User } from "../../generated/prisma/index.js";
-import sendMail from "../utils/nodemailer.ts";
+import sendMail from "../utils/nodemailer";
 
 export const register = async (data: RegisterData): Promise<RegistrationResponse> => {
   const userExists = await prisma.user.findFirst({

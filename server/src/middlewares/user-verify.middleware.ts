@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from "express";
-import { asyncHandler } from "../utils/async-handler.ts";
+import { asyncHandler } from "../utils/async-handler";
 import { User } from "../../generated/prisma/index.js";
-import { AppError } from "../utils/app-error.ts";
+import { AppError } from "../utils/app-error";
 interface AuthenticatedRequest extends Request {
   user: User;
 }

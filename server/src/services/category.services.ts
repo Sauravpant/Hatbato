@@ -1,6 +1,6 @@
 import { Category } from "../../generated/prisma/index.js";
-import { prisma } from "../db/config.ts";
-import { AppError } from "../utils/app-error.ts";
+import { prisma } from "../db/config";
+import { AppError } from "../utils/app-error";
 
 export const categoryService = async (): Promise<Category[]> => {
   const category = await prisma.category.findMany();

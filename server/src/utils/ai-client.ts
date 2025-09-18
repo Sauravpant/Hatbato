@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { AppError } from "./app-error.ts";
+import { AppError } from "./app-error";
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 const contentPrompt = process.env.CONTENT_MODERATION_PROMPT;

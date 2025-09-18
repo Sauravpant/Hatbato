@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
-import { asyncHandler } from "../utils/async-handler.ts";
-import { registerSchema, loginSchema, resetPasswordSchema } from "../validators/auth.validator.ts";
-import { register, login, logOut, resetPassword, sendOTP, verifyEmail } from "../services/auth.services.ts";
-import { ApiResponse } from "../utils/api-response.ts";
-import { AppError } from "../utils/app-error.ts";
-import { prisma } from "../db/config.ts";
-import { generateAccessToken } from "../utils/token.ts";
+import { asyncHandler } from "../utils/async-handler";
+import { registerSchema, loginSchema, resetPasswordSchema } from "../validators/auth.validator";
+import { register, login, logOut, resetPassword, sendOTP, verifyEmail } from "../services/auth.services";
+import { ApiResponse } from "../utils/api-response";
+import { AppError } from "../utils/app-error";
+import { prisma } from "../db/config";
+import { generateAccessToken } from "../utils/token";
 import { User } from "../../generated/prisma/index.js";
 interface AuthenticatedRequest extends Request {
   user: User;

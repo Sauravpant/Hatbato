@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import type { Express } from "express";
 import cookieParser from "cookie-parser";
 import cors from "cors";
-import errorMiddleware from "./middlewares/error.middleware.ts";
+import errorMiddleware from "./middlewares/error.middleware";
 import { rateLimit } from "express-rate-limit";
 
 const app: Express = express();
@@ -27,15 +27,15 @@ app.use(express.static("public"));
 app.use(cookieParser());
 app.use(limiter);
 
-import authRoutes from "./routes/auth.routes.ts";
-import userRoutes from "./routes/user.routes.ts";
-import notificationRoute from "./routes/notification.routes.ts";
-import productRoutes from "./routes/product.routes.ts";
-import reportRoutes from "./routes/report.routes.ts";
-import reviewRoutes from "./routes/review.routes.ts";
-import orderRoutes from "./routes/order.routes.ts";
-import adminRoutes from "./routes/admin.routes.ts";
-import categoryRoutes from "./routes/category.routes.ts";
+import authRoutes from "./routes/auth.routes";
+import userRoutes from "./routes/user.routes";
+import notificationRoute from "./routes/notification.routes";
+import productRoutes from "./routes/product.routes";
+import reportRoutes from "./routes/report.routes";
+import reviewRoutes from "./routes/review.routes";
+import orderRoutes from "./routes/order.routes";
+import adminRoutes from "./routes/admin.routes";
+import categoryRoutes from "./routes/category.routes";
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);

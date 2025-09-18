@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
-import { ApiResponse } from "../utils/api-response.ts";
+import { ApiResponse } from "../utils/api-response";
 import { User } from "../../generated/prisma/index.js";
-import { asyncHandler } from "../utils/async-handler.ts";
-import { getNotifications, markAllAsRead, markAsRead } from "../services/notification.services.ts";
+import { asyncHandler } from "../utils/async-handler";
+import { getNotifications, markAllAsRead, markAsRead } from "../services/notification.services";
 
 interface AuthenticatedRequest extends Request {
   user: User;

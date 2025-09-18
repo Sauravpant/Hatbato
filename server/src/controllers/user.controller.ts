@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { asyncHandler } from "../utils/async-handler.ts";
-import { AppError } from "../utils/app-error.ts";
-import { ApiResponse } from "../utils/api-response.ts";
+import { asyncHandler } from "../utils/async-handler";
+import { AppError } from "../utils/app-error";
+import { ApiResponse } from "../utils/api-response";
 import {
   deleteAccount,
   deletePicture,
@@ -14,10 +14,10 @@ import {
   submitContact,
   getDetails,
   getStats,
-} from "../services/user.services.ts";
+} from "../services/user.services";
 import { User } from "../../generated/prisma/index.js";
-import { emailSchema, resetPasswordSchema, submitFormSchema, updateUserSchema } from "../validators/user.validator.ts";
-import { ContactForm } from "../types/user.types.ts";
+import { emailSchema, resetPasswordSchema, submitFormSchema, updateUserSchema } from "../validators/user.validator";
+import { ContactForm } from "../types/user.types";
 
 interface AuthenticatedRequest extends Request {
   user: User;

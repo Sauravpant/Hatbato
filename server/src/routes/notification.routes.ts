@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { verifyJWT } from "../middlewares/auth.middleware.ts";
-import { getAllNotificatons, markAllNotificationsAsRead, markNotificationAsRead } from "../controllers/notification.controller.ts";
+import { verifyJWT } from "../middlewares/auth.middleware";
+import { getAllNotificatons, markAllNotificationsAsRead, markNotificationAsRead } from "../controllers/notification.controller";
 
 const router = Router();
 

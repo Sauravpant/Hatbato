@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { asyncHandler } from "../utils/async-handler.ts";
-import { cancelOrder, createOrder, getOrdersByBuyer, getOrdersBySeller, updateOrderStatus } from "../services/order.services.ts";
-import { ApiResponse } from "../utils/api-response.ts";
+import { asyncHandler } from "../utils/async-handler";
+import { cancelOrder, createOrder, getOrdersByBuyer, getOrdersBySeller, updateOrderStatus } from "../services/order.services";
+import { ApiResponse } from "../utils/api-response";
 import { User } from "../../generated/prisma/index.js";
 
 interface AuthenticatedRequest extends Request {

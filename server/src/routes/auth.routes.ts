@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { changePassword, loginUser, logOutUser, refreshAccessToken, registerUser, sendOtp, verifyAccount } from "../controllers/auth.controller.ts";
-import { verifyJWT } from "../middlewares/auth.middleware.ts";
+import { changePassword, loginUser, logOutUser, refreshAccessToken, registerUser, sendOtp, verifyAccount } from "../controllers/auth.controller";
+import { verifyJWT } from "../middlewares/auth.middleware";
 const router = Router();
 
 router.post("/register-user", registerUser);

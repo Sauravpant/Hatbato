@@ -1,6 +1,6 @@
-import { prisma } from "../db/config.ts";
-import { AppError } from "../utils/app-error.ts";
-import type { CreateOrder, UpdateOrder, Order } from "../types/order.types.ts";
+import { prisma } from "../db/config";
+import { AppError } from "../utils/app-error";
+import type { CreateOrder, UpdateOrder, Order } from "../types/order.types";
 export const createOrder = async ({ productId, userId }: CreateOrder): Promise<void> => {
   const product = await prisma.product.findUnique({
     where: {

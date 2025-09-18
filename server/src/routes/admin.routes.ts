@@ -1,6 +1,6 @@
 import { Router } from "express";
-import { verifyJWT } from "../middlewares/auth.middleware.ts";
-import { verifyAdmin } from "../middlewares/admin-verify.middleware.ts";
+import { verifyJWT } from "../middlewares/auth.middleware";
+import { verifyAdmin } from "../middlewares/admin-verify.middleware";
 import {
   addCategory,
   deleteCategory,
@@ -24,8 +24,8 @@ import {
   getCategoryInfo,
   getUserQueries,
   deleteQueries,
-} from "../controllers/admin.controller.ts";
-import { getAllProducts, getProductById } from "../controllers/product.controller.ts";
+} from "../controllers/admin.controller";
+import { getAllProducts, getProductById } from "../controllers/product.controller";
 
 const router = Router();
 
@@ -53,7 +53,7 @@ router.patch("/update-category/:categoryId", updateCategory);
 
 // Product management
 router.delete("/delete-product/:productId", deleteProduct);
-router.get("/product",getAllProducts)
+router.get("/product", getAllProducts);
 router.get("/get-all-products", getAllProducts);
 router.get("/get-single-product/:id", getProductById);
 

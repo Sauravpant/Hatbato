@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
-import { asyncHandler } from "../utils/async-handler.ts";
+import { asyncHandler } from "../utils/async-handler";
 import { User } from "../../generated/prisma/index.js";
-import { reportSchema } from "../validators/report.validator.ts";
-import { handleDeleteReport, handleGetReports, handleProductReport, handleUserReport } from "../services/report.services.ts";
-import { ApiResponse } from "../utils/api-response.ts";
+import { reportSchema } from "../validators/report.validator";
+import { handleDeleteReport, handleGetReports, handleProductReport, handleUserReport } from "../services/report.services";
+import { ApiResponse } from "../utils/api-response";
 
 interface AuthenticatedRequest extends Request {
   user: User;

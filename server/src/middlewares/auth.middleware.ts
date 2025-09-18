@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken";
 import { Request, Response, NextFunction } from "express";
-import { asyncHandler } from "../utils/async-handler.ts";
+import { asyncHandler } from "../utils/async-handler";
 import type { User } from "../../generated/prisma/index.js";
-import { AppError } from "../utils/app-error.ts";
-import { prisma } from "../db/config.ts";
+import { AppError } from "../utils/app-error";
+import { prisma } from "../db/config";
 
 interface AuthenticatedRequest extends Request {
   user: User;

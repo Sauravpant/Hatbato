@@ -7,14 +7,14 @@ import {
   getMyReceivedReviews,
   getAverageData,
   getSellerStats,
-} from "../controllers/review.controller.ts";
-import { verifyJWT } from "../middlewares/auth.middleware.ts";
-import { verifyUser } from "../middlewares/user-verify.middleware.ts";
+} from "../controllers/review.controller";
+import { verifyJWT } from "../middlewares/auth.middleware";
+import { verifyUser } from "../middlewares/user-verify.middleware";
 
 const router = Router();
 
-router.post("/:sellerId", verifyJWT, verifyUser,createReview);
-router.patch("/update/:reviewId", verifyJWT, verifyUser,updateReview);
+router.post("/:sellerId", verifyJWT, verifyUser, createReview);
+router.patch("/update/:reviewId", verifyJWT, verifyUser, updateReview);
 router.delete("/delete/:reviewId", verifyJWT, deleteReview);
 router.get("/my/given", verifyJWT, getMyGivenReviews);
 router.get("/my/received", verifyJWT, getMyReceivedReviews);
