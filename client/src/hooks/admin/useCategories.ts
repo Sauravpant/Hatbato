@@ -1,7 +1,7 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import toast from "react-hot-toast";
 import { createCategory, getAllCategories, getCategoryDetails, updateCategory, deleteCategory } from "@/services/adminServices";
-import type { ApiResponse, Category, CategoryDetails } from "@/types/admin/types";
+import type { ApiResponse, Category, CategoryDetails, CreateCategory, UpdateCategory } from "@/types/admin/types";
 
 // Categories
 export const useAllCategories = () =>
@@ -20,8 +20,8 @@ export const useCategoryDetails = (categoryId: string) =>
 
 export const useCreateCategory = () => {
   const queryClient = useQueryClient();
-  return useMutation<ApiResponse<Category>, unknown, { name: string; slug: string }>({
-    mutationFn: createCategory,
+  return useMutation<ApiResponse<Category>, unknown, { data: CreateCategory }>({
+    mutationFn: ({ data }: { data: CreateCategory }) => createCategory(data),
     onSuccess: (data) => {
       toast.success(data.message || "Category created successfully");
       queryClient.invalidateQueries({ queryKey: ["allCategories"] });
@@ -36,7 +36,7 @@ export const useCreateCategory = () => {
 
 export const useUpdateCategory = () => {
   const queryClient = useQueryClient();
-  return useMutation<ApiResponse<Category>, unknown, { categoryId: string; data: { name?: string; slug?: string } }>({
+  return useMutation<ApiResponse<Category>, unknown, { categoryId: string; data: UpdateCategory }>({
     mutationFn: ({ categoryId, data }) => updateCategory(categoryId, data),
     onSuccess: (data) => {
       toast.success(data.message || "Category updated successfully");
@@ -52,8 +52,8 @@ export const useUpdateCategory = () => {
 
 export const useDeleteCategory = () => {
   const queryClient = useQueryClient();
-  return useMutation<ApiResponse<null>, unknown, string>({
-    mutationFn: deleteCategory,
+  return useMutation<ApiResponse<null>, unknown, { id: string }>({
+    mutationFn: ({ id }: { id: string }) => deleteCategory(id),
     onSuccess: (data) => {
       toast.success(data.message || "Category deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["allCategories"] });

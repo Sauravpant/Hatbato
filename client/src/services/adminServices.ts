@@ -17,6 +17,9 @@ import type {
   ReviewsParams,
   UserParams,
   CategoryInfo,
+  Contact,
+  CreateCategory,
+  UpdateCategory,
 } from "@/types/admin/types";
 
 // Dashboard APIs
@@ -62,7 +65,7 @@ export const deleteUser = async (userId: string): Promise<ApiResponse<null>> => 
 };
 
 // Category APIs
-export const createCategory = async (data: { name: string; slug: string }): Promise<ApiResponse<Category>> => {
+export const createCategory = async (data: CreateCategory): Promise<ApiResponse<Category>> => {
   const response = await api.post<ApiResponse<Category>>("/admin/create-category", data);
   return response.data;
 };
@@ -77,7 +80,7 @@ export const getCategoryDetails = async (categoryId: string): Promise<ApiRespons
   return response.data;
 };
 
-export const updateCategory = async (categoryId: string, data: { name?: string; slug?: string }): Promise<ApiResponse<Category>> => {
+export const updateCategory = async (categoryId: string, data: UpdateCategory): Promise<ApiResponse<Category>> => {
   const response = await api.patch<ApiResponse<Category>>(`/admin/update-category/${categoryId}`, data);
   return response.data;
 };
@@ -88,6 +91,10 @@ export const deleteCategory = async (categoryId: string): Promise<ApiResponse<nu
 };
 
 // Product APIs
+export const getProducts = async (params?: Record<string, any>) => {
+  const response = await api.get("/admin/product", { params });
+  return response.data.data;
+}; 
 export const deleteProduct = async (productId: string): Promise<ApiResponse<null>> => {
   const response = await api.delete<ApiResponse<null>>(`/admin/delete-product/${productId}`);
   return response.data;
@@ -123,5 +130,16 @@ export const resolveReport = async (reportId: string): Promise<ApiResponse<null>
 
 export const deleteReport = async (reportId: string): Promise<ApiResponse<null>> => {
   const response = await api.delete<ApiResponse<null>>(`/admin/delete-report/${reportId}`);
+  return response.data;
+};
+
+//Contact APIs
+export const getQueries = async (): Promise<ApiResponse<Contact[]>> => {
+  const response = await api.get<ApiResponse<Contact[]>>("/admin/contacts");
+  return response.data;
+};
+
+export const deleteQueries = async (id: string): Promise<ApiResponse<null>> => {
+  const response = await api.delete<ApiResponse<null>>(`/admin/delete-contact/${id}`);
   return response.data;
 };

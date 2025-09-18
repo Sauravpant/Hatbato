@@ -45,7 +45,7 @@ export interface UserSummary {
   name: string;
   email: string;
   contactNumber: string;
-  imageUrl:string;
+  imageUrl: string;
   address: string;
   isActive: boolean;
   isVerified: boolean;
@@ -74,10 +74,25 @@ export interface UserProfile extends UserSummary {
 
 export interface Category {
   id: string;
+  description: string;
   name: string;
+  slogan: string;
   slug: string;
-  createdAt: string;
-  updatedAt: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface CreateCategory {
+  description: string;
+  name: string;
+  slogan: string;
+  slug: string;
+}
+export interface UpdateCategory {
+  description?: string;
+  name?: string;
+  slogan?: string;
+  slug?: string;
 }
 
 export interface CategoryDetails {
@@ -139,22 +154,22 @@ export interface PaginatedReports {
 }
 
 export interface ReportParams {
-  page?: number;
-  limit?: number;
+  page?: string;
+  limit?: string;
   status?: "pending" | "resolved";
   reportFor?: "user" | "product";
 }
 
 export interface OrderParams {
-  page?: number;
-  limit?: number;
+  page?: string;
+  limit?: string;
   status?: "pending" | "accepted" | "rejected";
   sortOrder?: "asc" | "desc";
 }
 
 export interface ReviewsParams {
-  page?: number;
-  limit?: number;
+  page?: string;
+  limit?: string;
   userName?: string;
   sortOrder?: "asc" | "desc";
 }
@@ -173,4 +188,24 @@ export interface CategoryInfo {
   name: string;
   slug: string;
   products: CategoryProduct[];
+}
+
+export interface Contact {
+  name: string;
+  id: string;
+  message: string;
+  contact: string;
+  email: string;
+  category: "general_enquiry" | "report_an_issue" | "partnership";
+}
+
+export interface ProductSearch {
+  search?: string;
+  minPrice?: string;
+  maxPrice?: string;
+  sort?: "asc" | "desc";
+  status?: "new" | "like_new" | "used" | "refurbished" | "damaged" | "for_parts";
+  category?: string;
+  page?: string;
+  limit?: string;
 }

@@ -13,8 +13,8 @@ export const useAllReviews = (params?: ReviewsParams) =>
 
 export const useDeleteReview = () => {
   const queryClient = useQueryClient();
-  return useMutation<ApiResponse<null>, unknown, string>({
-    mutationFn: deleteReview,
+  return useMutation<ApiResponse<null>, unknown, { id: string }>({
+    mutationFn: ({ id }: { id: string }) => deleteReview(id),
     onSuccess: (data) => {
       toast.success(data.message || "Review deleted successfully");
       queryClient.invalidateQueries({ queryKey: ["allReviews"] });
