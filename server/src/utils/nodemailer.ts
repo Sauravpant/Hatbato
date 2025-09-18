@@ -15,7 +15,7 @@ const sendMail = async (email, otp) => {
     <p>It will expire in 5 minutes. Please use it promptly.</p>
   `;
   await transporter.sendMail({
-    from: "sauravpant777@gmail.com",
+    from: process.env.EMAIL_USER,
     to: email,
     subject: "Your Verification Code",
     text: textContent,
