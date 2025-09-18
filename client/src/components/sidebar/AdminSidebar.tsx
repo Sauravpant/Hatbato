@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react";
 import { LayoutDashboard, Users, ShoppingBag, FileBarChart, ClipboardList, FolderTree, Star, Phone, LogOut, Menu } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
 import type { AppDispatch, RootState } from "@/store/store";
-import { useNavigate, useLocation } from "react-router-dom"; // Add useLocation
+import { useNavigate, useLocation } from "react-router-dom"; 
 import { logoutUser } from "@/features/auth/authSlice";
 
 const menuItems = [
