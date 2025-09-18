@@ -24,6 +24,13 @@ import ProductManagement from "@/pages/user/dashboard/ProductManagement";
 import SellerDetails from "@/pages/user/SellerDetails";
 import AdminLayout from "@/components/layout/AdminLayout";
 import Dashboard from "@/pages/admin/Dashboard";
+import Users from "@/pages/admin/Users";
+import Contacts from "@/pages/admin/Contacts";
+import Reports from "@/pages/admin/Reports";
+import ProductsPage from "@/pages/admin/Products";
+import Orders from "@/pages/admin/Orders";
+import Reviews from "@/pages/admin/Reviews";
+import Categories from "@/pages/admin/Categories";
 
 const AppRoutes = () => {
   return (
@@ -62,7 +69,14 @@ const AppRoutes = () => {
       {/*Admin Routes*/}
       <Route element={<ProtectedRoute allowedRole="admin" />}>
         <Route path="/admin" element={<AdminLayout />}>
-        <Route index element={<Dashboard/>}/>
+          <Route index element={<Dashboard />} />
+          <Route path="users" element={<Users />} />
+          <Route path="contacts" element={<Contacts />} />
+          <Route path="reports" element={<Reports />} />
+          <Route path="products" element={<ProductsPage />} />
+          <Route path="orders" element={<Orders />} />
+          <Route path="reviews" element={<Reviews />} />
+          <Route path="categories" element={<Categories />} />
         </Route>
       </Route>
 
