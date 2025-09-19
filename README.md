@@ -32,7 +32,7 @@ Technologies used in the project:
 
   <h2>Folder Structure</h2>
 
-  
+  ```text
 Hatbato/
 ├── client/                
 │   ├── node_modules/
@@ -87,7 +87,7 @@ Hatbato/
 ├── .gitignore            
 ├── README.md              
 └── package.json          
-
+```
 
 <h2>🛡License:</h2>
 
