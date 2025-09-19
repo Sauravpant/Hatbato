@@ -89,6 +89,14 @@ Hatbato/
 └── package.json          
 ```
 
+<h2>Project Snapshots</h2>
+### Admin Panel
+![Admin Snapshot](./client/public/admin)
+
+### User Panel
+![User Snapshot](./client/public/user/)
+
+
 <h2>🛡License:</h2>
 
 This project is licensed under the MIT
