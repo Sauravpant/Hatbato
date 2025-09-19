@@ -52,6 +52,8 @@ Hatbato/
 │   │   ├── App.tsx
 │   │   └── main.tsx
 │   ├── .env
+│   ├── Dockerfile
+│   ├── .dockerignore
 │   ├── .gitignore
 │   ├── components.json
 │   ├── eslint.config.js
@@ -81,6 +83,7 @@ Hatbato/
 │   │   ├── contents.ts
 │   │   └── index.ts
 │   ├── .env
+│   ├── docker-compose.yml
 │   ├── package-lock.json
 │   ├── package.json
 │   └── tsconfig.json
