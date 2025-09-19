@@ -90,6 +90,7 @@ Hatbato/
 ```
 
 <h2>Project Snapshots</h2>
+
 ### Admin Panel
 ![Admin Snapshot](./client/public/admin/)
 
